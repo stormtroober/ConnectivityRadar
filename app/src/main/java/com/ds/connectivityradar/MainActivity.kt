@@ -1,46 +1,88 @@
 package com.ds.connectivityradar
 
+import android.bluetooth.BluetoothAdapter
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat.startActivityForResult
 import com.ds.connectivityradar.ui.theme.ConnectivityRadarTheme
 
+
 class MainActivity : ComponentActivity() {
+    private val btResponse = mutableStateOf("")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        appContext = applicationContext
         setContent {
-            ConnectivityRadarTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting("Android")
-                }
-            }
+            AppContent(BluetoothHandler(this))
         }
+    }
+    companion object {
+
+        lateinit  var appContext: Context
+
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
+fun AppContent(btHandler: BluetoothHandler) {
+
+    var btResponse by remember { mutableStateOf("") }
+    ConnectivityRadarTheme {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            //verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            FilledButtonExample {
+//                btHandler.connect()
+//                btResponse = "ale"
+
+            }
+            TextComposed(btResponse = btResponse)
+
+        }
+
+
+    }
+}
+@Composable
+fun TextComposed(btResponse: String){
+    Text(modifier = Modifier.padding(5.dp),
+        text = btResponse
     )
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    ConnectivityRadarTheme {
-        Greeting("Android")
+    //AppContent(BluetoothHandler(this))
+}
+
+@Composable
+fun FilledButtonExample(onClick: () -> Unit) {
+    Button(
+        modifier = Modifier
+            .padding(24.dp)
+            .fillMaxWidth(),
+        onClick = { onClick() }) {
+        Text("Connetti al bluetooth")
     }
 }
