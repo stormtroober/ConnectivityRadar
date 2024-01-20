@@ -3,6 +3,7 @@ package com.ds.connectivityradar
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.core.content.ContextCompat
 import com.ds.connectivityradar.ui.theme.ConnectivityRadarTheme
 
 
@@ -29,6 +31,7 @@ class MainActivity : ComponentActivity() {
     private val btResponse = mutableStateOf("")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         appContext = applicationContext
         setContent {
             AppContent(BluetoothHandler(this))
@@ -43,24 +46,18 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppContent(btHandler: BluetoothHandler) {
-
     var btResponse by remember { mutableStateOf("") }
     ConnectivityRadarTheme {
         Column(
             modifier = Modifier.fillMaxSize(),
-            //verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             FilledButtonExample {
-//                btHandler.connect()
-//                btResponse = "ale"
-
+                btHandler.connect()
+                btResponse = "Connetti al bluetooth"
             }
             TextComposed(btResponse = btResponse)
-
         }
-
-
     }
 }
 @Composable
@@ -82,7 +79,10 @@ fun FilledButtonExample(onClick: () -> Unit) {
         modifier = Modifier
             .padding(24.dp)
             .fillMaxWidth(),
-        onClick = { onClick() }) {
+        onClick = {
+            onClick()
+            BluetoothHandler(MainActivity()).connect()
+        }) {
         Text("Connetti al bluetooth")
     }
 }
