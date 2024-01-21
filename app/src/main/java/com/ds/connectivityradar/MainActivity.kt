@@ -1,6 +1,6 @@
 package com.ds.connectivityradar
 
-import android.content.Context
+import BluetoothHandler
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -26,19 +26,14 @@ import com.ds.connectivityradar.ui.theme.ConnectivityRadarTheme
 
 class MainActivity : ComponentActivity() {
     private val btResponse = mutableStateOf("")
+
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        appContext = applicationContext
         setContent {
             AppContent(BluetoothHandler(this))
         }
-    }
-    companion object {
-
-        lateinit  var appContext: Context
-
     }
 }
 
@@ -51,38 +46,28 @@ fun AppContent(btHandler: BluetoothHandler) {
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            FilledButtonExample {
-                btHandler.getBtPermission()
-                btResponse = "Permessi del bluetooth"
+            Button(
+                modifier = Modifier
+                    .padding(24.dp)
+                    .fillMaxWidth(),
+                onClick = {
+                    btHandler.getBtPermission()
+                    btResponse = "Permessi del bluetooth"
+                    btHandler.getBtPermission()
+                }) {
+                Text("Connetti al bluetooth")
             }
-            TextComposed(btResponse = btResponse)
+            Text(
+                modifier = Modifier.padding(5.dp),
+                text = btResponse
+            )
         }
     }
 }
-@Composable
-fun TextComposed(btResponse: String){
-    Text(modifier = Modifier.padding(5.dp),
-        text = btResponse
-    )
-}
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    //AppContent(BluetoothHandler(this))
-}
-
-@RequiresApi(Build.VERSION_CODES.S)
-@Composable
-fun FilledButtonExample(onClick: () -> Unit) {
-    Button(
-        modifier = Modifier
-            .padding(24.dp)
-            .fillMaxWidth(),
-        onClick = {
-            onClick()
-            BluetoothHandler(MainActivity()).getBtPermission()
-        }) {
-        Text("Connetti al bluetooth")
-    }
+    AppContent(BluetoothHandler(MainActivity()))
 }
