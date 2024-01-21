@@ -51,8 +51,8 @@ fun AppContent(btHandler: BluetoothHandler) {
                     .padding(24.dp)
                     .fillMaxWidth(),
                 onClick = {
-                    btHandler.getBtPermission()
-                    btResponse = "Permessi del bluetooth"
+                    //btResponse è stato scritto per salvare la risposta del discovery del bt
+                    btResponse = "Risposta bluetooth..."
                     btHandler.getBtPermission()
                 }) {
                 Text("Connetti al bluetooth")

@@ -32,10 +32,13 @@ class BluetoothHandler(private val activity: MainActivity) {
                     return
                 }
                 activity.startActivityForResult(enableBtIntent, 1)
+            }
+            if (bluetoothAdapter != null) {
                 if (bluetoothAdapter.isEnabled) {
                     Log.d("BluetoothHandler", "Bluetooth enabled")
                 }
             }
+
         } catch (e: Exception) {
             // Log the exception
             Log.e("BluetoothHandler", "Error connecting to Bluetooth", e)
