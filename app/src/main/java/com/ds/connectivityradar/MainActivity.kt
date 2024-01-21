@@ -1,8 +1,6 @@
 package com.ds.connectivityradar
 
-import android.bluetooth.BluetoothAdapter
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -23,8 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat.startActivityForResult
-import androidx.core.content.ContextCompat
 import com.ds.connectivityradar.ui.theme.ConnectivityRadarTheme
 
 
@@ -56,8 +52,8 @@ fun AppContent(btHandler: BluetoothHandler) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             FilledButtonExample {
-                btHandler.connect()
-                btResponse = "Connetti al bluetooth"
+                btHandler.getBtPermission()
+                btResponse = "Permessi del bluetooth"
             }
             TextComposed(btResponse = btResponse)
         }
@@ -85,7 +81,7 @@ fun FilledButtonExample(onClick: () -> Unit) {
             .fillMaxWidth(),
         onClick = {
             onClick()
-            BluetoothHandler(MainActivity()).connect()
+            BluetoothHandler(MainActivity()).getBtPermission()
         }) {
         Text("Connetti al bluetooth")
     }

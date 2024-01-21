@@ -1,7 +1,6 @@
 package com.ds.connectivityradar
 
 import android.Manifest
-import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.content.Intent
@@ -18,7 +17,7 @@ class BluetoothHandler(private val activity: MainActivity) {
 
 
     @RequiresApi(Build.VERSION_CODES.S)
-    fun connect(){
+    fun getBtPermission(){
         try {
             val bluetoothManager: BluetoothManager = appContext.getSystemService(BluetoothManager::class.java)
             val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
