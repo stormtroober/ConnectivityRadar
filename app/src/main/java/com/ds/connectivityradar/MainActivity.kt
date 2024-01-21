@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,6 +30,7 @@ import com.ds.connectivityradar.ui.theme.ConnectivityRadarTheme
 
 class MainActivity : ComponentActivity() {
     private val btResponse = mutableStateOf("")
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -44,6 +46,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun AppContent(btHandler: BluetoothHandler) {
     var btResponse by remember { mutableStateOf("") }
@@ -73,6 +76,7 @@ fun GreetingPreview() {
     //AppContent(BluetoothHandler(this))
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun FilledButtonExample(onClick: () -> Unit) {
     Button(
