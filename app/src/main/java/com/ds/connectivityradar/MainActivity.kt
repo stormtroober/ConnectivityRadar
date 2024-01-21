@@ -1,6 +1,13 @@
 package com.ds.connectivityradar
 
 import BluetoothHandler
+import android.Manifest
+import android.bluetooth.BluetoothDevice
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -21,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
 import com.ds.connectivityradar.ui.theme.ConnectivityRadarTheme
 
 
@@ -33,6 +41,30 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             AppContent(BluetoothHandler(this))
+        }
+        val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
+        registerReceiver(receiver, filter)
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(receiver)
+    }
+
+    private val receiver = object : BroadcastReceiver() {
+
+        override fun onReceive(context: Context, intent: Intent) {
+            val action: String = intent.action.toString()
+            when(action) {
+                BluetoothDevice.ACTION_FOUND -> {
+                    // Discovery has found a device. Get the BluetoothDevice
+                    // object and its info from the Intent.
+                    val device: BluetoothDevice =
+                        intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)!!
+                    //val deviceName = device.name
+                    val deviceHardwareAddress = device.address // MAC address
+                    print(deviceHardwareAddress)
+                }
+            }
         }
     }
 }
@@ -61,6 +93,23 @@ fun AppContent(btHandler: BluetoothHandler) {
                 modifier = Modifier.padding(5.dp),
                 text = btResponse
             )
+
+            Button(
+                modifier = Modifier
+                    .padding(24.dp)
+                    .fillMaxWidth(),
+                onClick = {
+                    //btResponse è stato scritto per salvare la risposta del discovery del bt
+                    btResponse = "discovery process"
+                    btHandler.discovery()
+                }) {
+                Text("Discovery")
+            }
+            Text(
+                modifier = Modifier.padding(5.dp),
+                text = "discovery process"
+            )
+
         }
     }
 }
