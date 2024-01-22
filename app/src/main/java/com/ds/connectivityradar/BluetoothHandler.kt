@@ -14,60 +14,60 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.ds.connectivityradar.permissions.PermissionManager
 
 class BluetoothHandler(private val activity: MainActivity) {
 
     private val appContext: Context = activity.applicationContext
+    private val permissionManager = PermissionManager(activity)
+
+    companion object {
+        private const val REQUEST_ENABLE_BT = 1
+    }
 
     @RequiresApi(Build.VERSION_CODES.S)
     fun getBtPermission() {
-        try {
-            val bluetoothManager: BluetoothManager =
-                appContext.getSystemService(BluetoothManager::class.java)
-            val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
-            if (bluetoothAdapter?.isEnabled == false) {
-                val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-                if (ActivityCompat.checkSelfPermission(
-                        appContext, Manifest.permission.BLUETOOTH_CONNECT
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    activity.requestPermissions(arrayOf(Manifest.permission.BLUETOOTH_CONNECT), 1)
-                    Log.d("com.ds.connectivityradar.BluetoothHandler", "Bluetooth permission granted. Returning")
-                    return
-                }
-                activity.startActivityForResult(enableBtIntent, 1)
+        val bluetoothManager: BluetoothManager =
+            appContext.getSystemService(BluetoothManager::class.java)
+        val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
+
+        if (bluetoothAdapter?.isEnabled == false) {
+            permissionManager.requestPermission(Manifest.permission.BLUETOOTH_CONNECT)
+            requestBluetoothEnable()
+        }
+
+        if (bluetoothAdapter?.isEnabled == true) {
+            Log.d("com.ds.connectivityradar.BluetoothHandler", "Bluetooth enabled")
+        }
+
+        val permissions = arrayOf(
+            Manifest.permission.BLUETOOTH,
+            Manifest.permission.BLUETOOTH_ADMIN,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+            Manifest.permission.BLUETOOTH_SCAN
+        )
+
+        for (permission in permissions) {
+            if (!permissionManager.isPermissionGranted(permission)) {
+                permissionManager.requestPermission(permission)
             }
-            if (bluetoothAdapter != null) {
-                if (bluetoothAdapter.isEnabled) {
-                    Log.d("com.ds.connectivityradar.BluetoothHandler", "Bluetooth enabled")
-                }
-            }
-            val permissions = arrayOf(
-                Manifest.permission.BLUETOOTH,
-                Manifest.permission.BLUETOOTH_ADMIN,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-                Manifest.permission.BLUETOOTH_SCAN
+        }
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    private fun requestBluetoothEnable() {
+        val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+        if (ActivityCompat.checkSelfPermission(
+                activity, Manifest.permission.BLUETOOTH_CONNECT
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                activity, arrayOf(Manifest.permission.BLUETOOTH_CONNECT), REQUEST_ENABLE_BT
             )
-
-            if (ContextCompat.checkSelfPermission(
-                    activity.applicationContext, permissions[0]
-                ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-                    activity.applicationContext, permissions[1]
-                ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-                    activity.applicationContext, permissions[2]
-                ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-                    activity.applicationContext, permissions[3]
-                ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-                    activity.applicationContext, permissions[4]
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                ActivityCompat.requestPermissions(activity, permissions, 1)
-            }
-
-        } catch (e: Exception) {
-            // Log the exception
-            Log.e("com.ds.connectivityradar.BluetoothHandler", "Error connecting to Bluetooth", e)
+        } else {
+            activity.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
         }
     }
 
@@ -79,13 +79,11 @@ class BluetoothHandler(private val activity: MainActivity) {
             if (bluetoothAdapter.isEnabled) {
 
                 if (ContextCompat.checkSelfPermission(
-                        activity.applicationContext,
-                        Manifest.permission.BLUETOOTH_SCAN
+                        activity.applicationContext, Manifest.permission.BLUETOOTH_SCAN
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
                     ActivityCompat.requestPermissions(
-                        activity,
-                        arrayOf(Manifest.permission.BLUETOOTH_SCAN), 1
+                        activity, arrayOf(Manifest.permission.BLUETOOTH_SCAN), 1
                     )
                 }
                 Log.i("com.ds.connectivityradar.BluetoothHandler", "Starting discovery")
@@ -98,8 +96,7 @@ class BluetoothHandler(private val activity: MainActivity) {
                             intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                         if (device != null) {
                             if (ActivityCompat.checkSelfPermission(
-                                    activity,
-                                    Manifest.permission.BLUETOOTH_CONNECT
+                                    activity, Manifest.permission.BLUETOOTH_CONNECT
                                 ) == PackageManager.PERMISSION_GRANTED
                             ) {
                                 discoveredDevices.add(device)
