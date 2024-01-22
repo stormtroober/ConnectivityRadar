@@ -31,6 +31,9 @@ fun MainContent(
     discoveredDevices: MutableList<BluetoothDevice>,
 ) {
     var btResponse by remember { mutableStateOf("") }
+    var btResponseServer by remember { mutableStateOf("") }
+    var btResponseClient by remember { mutableStateOf("") }
+    var btResponseDiscovery by remember { mutableStateOf("") }
     ConnectivityRadarTheme {
         Column(
             modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
@@ -42,7 +45,7 @@ fun MainContent(
             )
             MainMenuButton(
                 "Discovery", {
-                    btResponse = "discovery process"
+                    btResponseDiscovery = "discovery process"
                     if (ContextCompat.checkSelfPermission(
                             activity, Manifest.permission.BLUETOOTH_CONNECT
                         ) == PackageManager.PERMISSION_GRANTED
@@ -64,14 +67,16 @@ fun MainContent(
 
             MainMenuButton(
                 "Crea Server...",
-                { btResponse = "Risposta bluetooth..."; },
-                btResponse
+                { btResponseServer = "Risposta bluetooth..."; },
+                btResponseServer
             )
 
             MainMenuButton(
                 "Unisciti come Client...",
-                { btResponse = "Risposta bluetooth..."; },
-                btResponse
+                { btResponseClient = "Risposta bluetooth...";
+
+                },
+                btResponseClient
             )
 
         }
