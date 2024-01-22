@@ -69,7 +69,7 @@ fun MainContent(
             )
 
             MainMenuButton(
-                "Crea Client...",
+                "Unisciti come Client...",
                 { btResponse = "Risposta bluetooth..."; },
                 btResponse
             )

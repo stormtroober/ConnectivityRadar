@@ -99,7 +99,9 @@ class BluetoothHandler(private val activity: MainActivity) {
                                     activity, Manifest.permission.BLUETOOTH_CONNECT
                                 ) == PackageManager.PERMISSION_GRANTED
                             ) {
-                                discoveredDevices.add(device)
+                                if(!discoveredDevices.contains(device)) {
+                                    discoveredDevices.add(device)
+                                }
                                 Log.i(
                                     "com.ds.connectivityradar.BluetoothHandler",
                                     "Found device: ${device.name} with address ${device.address}"
