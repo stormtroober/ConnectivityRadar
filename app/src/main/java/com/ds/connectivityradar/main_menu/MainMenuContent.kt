@@ -1,6 +1,6 @@
 package com.ds.connectivityradar.main_menu
 
-import BluetoothHandler
+import com.ds.connectivityradar.BluetoothHandler
 import android.Manifest
 import android.app.Activity
 import android.bluetooth.BluetoothDevice

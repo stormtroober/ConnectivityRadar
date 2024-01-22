@@ -1,6 +1,5 @@
 package com.ds.connectivityradar
 
-import BluetoothHandler
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity

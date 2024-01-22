@@ -1,3 +1,5 @@
+package com.ds.connectivityradar
+
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -12,7 +14,6 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.ds.connectivityradar.MainActivity
 
 class BluetoothHandler(private val activity: MainActivity) {
 
@@ -31,14 +32,14 @@ class BluetoothHandler(private val activity: MainActivity) {
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
                     activity.requestPermissions(arrayOf(Manifest.permission.BLUETOOTH_CONNECT), 1)
-                    Log.d("BluetoothHandler", "Bluetooth permission granted. Returning")
+                    Log.d("com.ds.connectivityradar.BluetoothHandler", "Bluetooth permission granted. Returning")
                     return
                 }
                 activity.startActivityForResult(enableBtIntent, 1)
             }
             if (bluetoothAdapter != null) {
                 if (bluetoothAdapter.isEnabled) {
-                    Log.d("BluetoothHandler", "Bluetooth enabled")
+                    Log.d("com.ds.connectivityradar.BluetoothHandler", "Bluetooth enabled")
                 }
             }
             val permissions = arrayOf(
@@ -66,7 +67,7 @@ class BluetoothHandler(private val activity: MainActivity) {
 
         } catch (e: Exception) {
             // Log the exception
-            Log.e("BluetoothHandler", "Error connecting to Bluetooth", e)
+            Log.e("com.ds.connectivityradar.BluetoothHandler", "Error connecting to Bluetooth", e)
         }
     }
 
@@ -87,7 +88,7 @@ class BluetoothHandler(private val activity: MainActivity) {
                         arrayOf(Manifest.permission.BLUETOOTH_SCAN), 1
                     )
                 }
-                Log.i("BluetoothHandler", "Starting discovery")
+                Log.i("com.ds.connectivityradar.BluetoothHandler", "Starting discovery")
                 Log.i("Discovery Process", bluetoothAdapter.startDiscovery().toString())
 
                 val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
@@ -103,13 +104,13 @@ class BluetoothHandler(private val activity: MainActivity) {
                             ) {
                                 discoveredDevices.add(device)
                                 Log.i(
-                                    "BluetoothHandler",
+                                    "com.ds.connectivityradar.BluetoothHandler",
                                     "Found device: ${device.name} with address ${device.address}"
                                 )
                             } else {
                                 // Handle the case where the necessary permissions are not granted
                                 Log.i(
-                                    "BluetoothHandler",
+                                    "com.ds.connectivityradar.BluetoothHandler",
                                     "Bluetooth connect permission not granted"
                                 )
                             }
