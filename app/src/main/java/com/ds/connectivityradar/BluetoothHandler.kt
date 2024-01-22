@@ -1,8 +1,11 @@
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
@@ -24,8 +27,7 @@ class BluetoothHandler(private val activity: MainActivity) {
             if (bluetoothAdapter?.isEnabled == false) {
                 val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
                 if (ActivityCompat.checkSelfPermission(
-                        appContext,
-                        Manifest.permission.BLUETOOTH_CONNECT
+                        appContext, Manifest.permission.BLUETOOTH_CONNECT
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
                     activity.requestPermissions(arrayOf(Manifest.permission.BLUETOOTH_CONNECT), 1)
@@ -47,11 +49,17 @@ class BluetoothHandler(private val activity: MainActivity) {
                 Manifest.permission.BLUETOOTH_SCAN
             )
 
-            if (ContextCompat.checkSelfPermission(activity.applicationContext, permissions[0]) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(activity.applicationContext, permissions[1]) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(activity.applicationContext, permissions[2]) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(activity.applicationContext, permissions[3]) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(activity.applicationContext, permissions[4]) != PackageManager.PERMISSION_GRANTED
+            if (ContextCompat.checkSelfPermission(
+                    activity.applicationContext, permissions[0]
+                ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                    activity.applicationContext, permissions[1]
+                ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                    activity.applicationContext, permissions[2]
+                ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                    activity.applicationContext, permissions[3]
+                ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                    activity.applicationContext, permissions[4]
+                ) != PackageManager.PERMISSION_GRANTED
             ) {
                 ActivityCompat.requestPermissions(activity, permissions, 1)
             }
@@ -62,19 +70,53 @@ class BluetoothHandler(private val activity: MainActivity) {
         }
     }
 
-    fun discovery() {
+    @RequiresApi(Build.VERSION_CODES.S)
+    fun discovery(discoveredDevices: MutableList<BluetoothDevice>) {
         val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
         if (bluetoothAdapter != null) {
             if (bluetoothAdapter.isEnabled) {
 
-                if (ContextCompat.checkSelfPermission(activity.applicationContext, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED
+                if (ContextCompat.checkSelfPermission(
+                        activity.applicationContext,
+                        Manifest.permission.BLUETOOTH_SCAN
+                    ) != PackageManager.PERMISSION_GRANTED
                 ) {
-                    ActivityCompat.requestPermissions(activity,
-                        arrayOf(Manifest.permission.BLUETOOTH_SCAN), 1)
+                    ActivityCompat.requestPermissions(
+                        activity,
+                        arrayOf(Manifest.permission.BLUETOOTH_SCAN), 1
+                    )
                 }
                 Log.i("BluetoothHandler", "Starting discovery")
                 Log.i("Discovery Process", bluetoothAdapter.startDiscovery().toString())
+
+                val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
+                val receiver = object : BroadcastReceiver() {
+                    override fun onReceive(context: Context, intent: Intent) {
+                        val device: BluetoothDevice? =
+                            intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+                        if (device != null) {
+                            if (ActivityCompat.checkSelfPermission(
+                                    activity,
+                                    Manifest.permission.BLUETOOTH_CONNECT
+                                ) == PackageManager.PERMISSION_GRANTED
+                            ) {
+                                discoveredDevices.add(device)
+                                Log.i(
+                                    "BluetoothHandler",
+                                    "Found device: ${device.name} with address ${device.address}"
+                                )
+                            } else {
+                                // Handle the case where the necessary permissions are not granted
+                                Log.i(
+                                    "BluetoothHandler",
+                                    "Bluetooth connect permission not granted"
+                                )
+                            }
+                        }
+                    }
+                }
+                activity.registerReceiver(receiver, filter)
             }
         }
     }
