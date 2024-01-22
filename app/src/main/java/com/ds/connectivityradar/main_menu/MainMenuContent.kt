@@ -61,6 +61,19 @@ fun MainContent(
                     Text(text = "${device.name ?: "Unknown Device"} - ${device.address}")
                 }
             }
+
+            MainMenuButton(
+                "Crea Server...",
+                { btResponse = "Risposta bluetooth..."; },
+                btResponse
+            )
+
+            MainMenuButton(
+                "Crea Client...",
+                { btResponse = "Risposta bluetooth..."; },
+                btResponse
+            )
+
         }
     }
 }
