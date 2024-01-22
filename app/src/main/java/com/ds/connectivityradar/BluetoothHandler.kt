@@ -43,13 +43,15 @@ class BluetoothHandler(private val activity: MainActivity) {
                 Manifest.permission.BLUETOOTH,
                 Manifest.permission.BLUETOOTH_ADMIN,
                 Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION,
                 Manifest.permission.BLUETOOTH_SCAN
             )
 
             if (ContextCompat.checkSelfPermission(activity.applicationContext, permissions[0]) != PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(activity.applicationContext, permissions[1]) != PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(activity.applicationContext, permissions[2]) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(activity.applicationContext, permissions[3]) != PackageManager.PERMISSION_GRANTED
+                ContextCompat.checkSelfPermission(activity.applicationContext, permissions[3]) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(activity.applicationContext, permissions[4]) != PackageManager.PERMISSION_GRANTED
             ) {
                 ActivityCompat.requestPermissions(activity, permissions, 1)
             }
@@ -65,15 +67,14 @@ class BluetoothHandler(private val activity: MainActivity) {
 
         if (bluetoothAdapter != null) {
             if (bluetoothAdapter.isEnabled) {
-                Log.d("BluetoothHandler", "Bluetooth enabled")
-                if (ActivityCompat.checkSelfPermission(
-                        activity.applicationContext,
-                        Manifest.permission.BLUETOOTH_SCAN
-                    ) != PackageManager.PERMISSION_GRANTED
+
+                if (ContextCompat.checkSelfPermission(activity.applicationContext, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED
                 ) {
-                    return
+                    ActivityCompat.requestPermissions(activity,
+                        arrayOf(Manifest.permission.BLUETOOTH_SCAN), 1)
                 }
-                bluetoothAdapter.startDiscovery()
+                Log.i("BluetoothHandler", "Starting discovery")
+                Log.i("Discovery Process", bluetoothAdapter.startDiscovery().toString())
             }
         }
     }

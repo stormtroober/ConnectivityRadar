@@ -10,6 +10,7 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -43,6 +44,7 @@ class MainActivity : ComponentActivity() {
             AppContent(BluetoothHandler(this))
         }
         val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
+        //filter.addAction(BluetoothDevice.ACTION_FOUND)
         registerReceiver(receiver, filter)
     }
     override fun onDestroy() {
@@ -63,6 +65,7 @@ class MainActivity : ComponentActivity() {
                     //val deviceName = device.name
                     val deviceHardwareAddress = device.address // MAC address
                     print(deviceHardwareAddress)
+                    Log.i("MAC", deviceHardwareAddress)
                 }
             }
         }
