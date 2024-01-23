@@ -15,6 +15,10 @@ import androidx.compose.ui.platform.LocalContext
 fun MainScreen(btHandler: BluetoothHandler) {
     val discoveredDevices = remember { mutableStateListOf<BluetoothDevice>() }
     MainContent(
-        LocalContext.current as Activity, btHandler, discoveredDevices
-    )
+        LocalContext.current as Activity,
+        btHandler,
+        discoveredDevices
+    ) { device ->
+        btHandler.connectToDevice(device)
+    }
 }

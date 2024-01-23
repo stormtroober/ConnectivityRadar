@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothDevice
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,6 +30,7 @@ fun MainContent(
     activity: Activity,
     btHandler: BluetoothHandler,
     discoveredDevices: MutableList<BluetoothDevice>,
+    onDeviceClick: (BluetoothDevice) -> Unit
 ) {
     var btResponse by remember { mutableStateOf("") }
     var btResponseServer by remember { mutableStateOf("") }
@@ -61,7 +63,12 @@ fun MainContent(
             )
             LazyColumn {
                 items(discoveredDevices) { device ->
-                    Text(text = "${device.name ?: "Unknown Device"} - ${device.address}")
+                    Text(
+                        text = "${device.name ?: "Unknown Device"} - ${device.address}",
+                        modifier = Modifier.clickable {
+                            onDeviceClick(device)
+                        }
+                    )
                 }
             }
 

@@ -4,6 +4,7 @@ import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
+import android.bluetooth.BluetoothSocket
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -15,6 +16,8 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.ds.connectivityradar.permissions.PermissionManager
+import java.io.IOException
+import java.util.UUID
 
 class BluetoothHandler(private val activity: MainActivity) {
 
@@ -148,5 +151,22 @@ class BluetoothHandler(private val activity: MainActivity) {
                 activity.registerReceiver(receiver, filter)
             }
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    fun connectToDevice(device: BluetoothDevice) {
+        if (ActivityCompat.checkSelfPermission(
+                appContext,
+                Manifest.permission.BLUETOOTH_CONNECT
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                activity,
+                arrayOf(Manifest.permission.BLUETOOTH_CONNECT),
+                1
+            )
+            return
+        }
+        Log.i("com.ds.connectivityradar.BluetoothHandler", "Connecting to device ${device.name} with address ${device.address}")
     }
 }

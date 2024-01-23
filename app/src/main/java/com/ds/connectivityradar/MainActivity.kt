@@ -28,6 +28,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainActivityPreview() {
     MainContent(
-        MainActivity(), BluetoothHandler(MainActivity()), mutableListOf()
+        MainActivity(),
+        BluetoothHandler(MainActivity()),
+        mutableListOf(),
+        onDeviceClick = { /* Handle click event here */ }
     )
 }
