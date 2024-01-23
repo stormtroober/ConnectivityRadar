@@ -30,7 +30,9 @@ class BluetoothHandler(private val activity: MainActivity) {
         val bluetoothManager: BluetoothManager =
             appContext.getSystemService(BluetoothManager::class.java)
         val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
-
+        ActivityCompat.requestPermissions(
+            activity, arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_ADVERTISE), REQUEST_ENABLE_BT
+        )
         if (bluetoothAdapter?.isEnabled == false) {
             permissionManager.requestPermission(Manifest.permission.BLUETOOTH_CONNECT)
             requestBluetoothEnable()
@@ -40,12 +42,17 @@ class BluetoothHandler(private val activity: MainActivity) {
             Log.d("com.ds.connectivityradar.BluetoothHandler", "Bluetooth enabled")
         }
 
+
+
         val permissions = arrayOf(
             Manifest.permission.BLUETOOTH,
             Manifest.permission.BLUETOOTH_ADMIN,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-            Manifest.permission.BLUETOOTH_SCAN
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.BLUETOOTH_SCAN,
+            Manifest.permission.BLUETOOTH_CONNECT,
+            Manifest.permission.BLUETOOTH_ADVERTISE
         )
 
         for (permission in permissions) {
@@ -78,16 +85,38 @@ class BluetoothHandler(private val activity: MainActivity) {
         if (bluetoothAdapter != null) {
             if (bluetoothAdapter.isEnabled) {
 
+
                 if (ContextCompat.checkSelfPermission(
                         activity.applicationContext, Manifest.permission.BLUETOOTH_SCAN
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
+                    Log.i("com.ds.connectivityradar.BluetoothHandler", "BLUETOOTH_SCAN permission not granted")
                     ActivityCompat.requestPermissions(
                         activity, arrayOf(Manifest.permission.BLUETOOTH_SCAN), 1
                     )
+                } else {
+                    Log.i("com.ds.connectivityradar.BluetoothHandler", "BLUETOOTH_SCAN permission granted")
                 }
-                Log.i("com.ds.connectivityradar.BluetoothHandler", "Starting discovery")
-                Log.i("Discovery Process", bluetoothAdapter.startDiscovery().toString())
+
+                if (ContextCompat.checkSelfPermission(
+                        activity.applicationContext, Manifest.permission.BLUETOOTH_CONNECT
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    Log.i("com.ds.connectivityradar.BluetoothHandler", "BLUETOOTH_CONNECT permission not granted")
+                    ActivityCompat.requestPermissions(
+                        activity, arrayOf(Manifest.permission.BLUETOOTH_CONNECT), 1
+                    )
+                } else {
+                    Log.i("com.ds.connectivityradar.BluetoothHandler", "BLUETOOTH_CONNECT permission granted")
+                }
+
+                if (bluetoothAdapter.isDiscovering) {
+                    Log.i("com.ds.connectivityradar.BluetoothHandler", "Discovery process already in progress")
+                } else {
+                    Log.i("com.ds.connectivityradar.BluetoothHandler", "Starting discovery")
+                    val isDiscoveryStarted = bluetoothAdapter.startDiscovery()
+                    Log.i("com.ds.connectivityradar.BluetoothHandler", "Discovery started: $isDiscoveryStarted")
+                }
 
                 val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
                 val receiver = object : BroadcastReceiver() {

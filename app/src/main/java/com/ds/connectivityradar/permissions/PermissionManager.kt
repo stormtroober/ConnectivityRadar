@@ -1,6 +1,7 @@
 package com.ds.connectivityradar.permissions
 
 import android.content.pm.PackageManager
+import android.util.Log
 import androidx.core.content.ContextCompat
 import com.ds.connectivityradar.MainActivity
 
@@ -18,5 +19,6 @@ class PermissionManager(private val activity: MainActivity) {
 
     fun requestPermission(permission: String) {
         activity.requestPermissions(arrayOf(permission), REQUEST_ENABLE_BT)
+        Log.i("com.ds.connectivityradar.permissions.PermissionManager", "Requested permission $permission")
     }
 }
