@@ -1,6 +1,5 @@
 package com.ds.connectivityradar.main_menu
 
-import com.ds.connectivityradar.BluetoothHandler
 import android.app.Activity
 import android.bluetooth.BluetoothDevice
 import android.os.Build
@@ -9,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import com.ds.connectivityradar.bluetooth.BluetoothHandler
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable

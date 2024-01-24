@@ -7,19 +7,26 @@ import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.ds.connectivityradar.bluetooth.BluetoothHandler
 import com.ds.connectivityradar.main_menu.MainContent
 import com.ds.connectivityradar.main_menu.MainScreen
 
 
 class MainActivity : ComponentActivity() {
 
+    private lateinit var btHandler: BluetoothHandler
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        btHandler = BluetoothHandler(this)
         setContent {
-            MainScreen(BluetoothHandler(this))
+            MainScreen(btHandler)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        btHandler.stopBluetoothServer()
     }
 }
 

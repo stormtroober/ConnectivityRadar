@@ -1,4 +1,4 @@
-package com.ds.connectivityradar
+package com.ds.connectivityradar.bluetooth
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
@@ -15,6 +15,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.ds.connectivityradar.MainActivity
 import com.ds.connectivityradar.permissions.PermissionManager
 import java.io.IOException
 import java.util.UUID
@@ -23,15 +24,24 @@ class BluetoothHandler(private val activity: MainActivity) {
 
     private val appContext: Context = activity.applicationContext
     private val permissionManager = PermissionManager(activity)
+    private val bluetoothManager: BluetoothManager =
+        appContext.getSystemService(BluetoothManager::class.java)
+    private val serverThread : ServerThread = ServerThread(bluetoothManager.adapter, activity)
 
     companion object {
         private const val REQUEST_ENABLE_BT = 1
     }
 
+    fun startBluetoothServer() {
+        val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+        if (bluetoothAdapter != null) {
+            if (bluetoothAdapter.isEnabled) {
+                serverThread.start()
+            }
+        }
+    }
     @RequiresApi(Build.VERSION_CODES.S)
     fun getBtPermission() {
-        val bluetoothManager: BluetoothManager =
-            appContext.getSystemService(BluetoothManager::class.java)
         val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
         ActivityCompat.requestPermissions(
             activity, arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_ADVERTISE), REQUEST_ENABLE_BT
@@ -168,5 +178,9 @@ class BluetoothHandler(private val activity: MainActivity) {
             return
         }
         Log.i("com.ds.connectivityradar.BluetoothHandler", "Connecting to device ${device.name} with address ${device.address}")
+    }
+
+    fun stopBluetoothServer() {
+        serverThread.cancel()
     }
 }

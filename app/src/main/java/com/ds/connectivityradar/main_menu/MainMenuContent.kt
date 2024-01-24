@@ -1,6 +1,5 @@
 package com.ds.connectivityradar.main_menu
 
-import com.ds.connectivityradar.BluetoothHandler
 import android.Manifest
 import android.app.Activity
 import android.bluetooth.BluetoothDevice
@@ -22,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.ds.connectivityradar.bluetooth.BluetoothHandler
 import com.ds.connectivityradar.ui.theme.ConnectivityRadarTheme
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -74,14 +74,18 @@ fun MainContent(
 
             MainMenuButton(
                 "Crea Server...",
-                { btResponseServer = "Risposta bluetooth..."; },
+                {
+                    btResponseServer = "";
+                    //btHandler.getBtPermission()
+                    btHandler.startBluetoothServer()
+                },
                 btResponseServer
             )
 
             MainMenuButton(
                 "Unisciti come Client...",
-                { btResponseClient = "Risposta bluetooth...";
-
+                {
+                    btResponseClient = "Risposta bluetooth...";
                 },
                 btResponseClient
             )
