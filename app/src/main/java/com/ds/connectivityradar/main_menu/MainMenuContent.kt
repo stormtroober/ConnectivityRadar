@@ -82,13 +82,7 @@ fun MainContent(
                 btResponseServer
             )
 
-            MainMenuButton(
-                "Unisciti come Client...",
-                {
-                    btResponseClient = "Risposta bluetooth...";
-                },
-                btResponseClient
-            )
+
 
         }
     }

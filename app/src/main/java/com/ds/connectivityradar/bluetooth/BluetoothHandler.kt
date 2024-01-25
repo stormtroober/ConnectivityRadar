@@ -178,9 +178,23 @@ class BluetoothHandler(private val activity: MainActivity) {
             return
         }
         Log.i("com.ds.connectivityradar.BluetoothHandler", "Connecting to device ${device.name} with address ${device.address}")
+        startBluetoothClient(device)
+        
     }
 
     fun stopBluetoothServer() {
         serverThread.cancel()
+    }
+
+    fun startBluetoothClient(device: BluetoothDevice) {
+        val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+        if (bluetoothAdapter != null) {
+            if (bluetoothAdapter.isEnabled) {
+                if (device != null) {
+                    val clientThread = ClientThread(bluetoothAdapter, device, activity)
+                    clientThread.start()
+                }
+            }
+        }
     }
 }
