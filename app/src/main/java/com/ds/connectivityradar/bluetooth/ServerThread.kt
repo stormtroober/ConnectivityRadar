@@ -48,7 +48,7 @@ class ServerThread(private val btAdapter: BluetoothAdapter, private val activity
             val socket: BluetoothSocket? = try {
                 serverSocket?.accept()
             } catch (e: IOException) {
-                Log.e(TAG, "Socket's accept() method failed", e)
+                Log.e("ServerThread", "Socket's accept() method failed", e)
                 shouldLoop = false
                 null
             }

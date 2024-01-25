@@ -41,11 +41,6 @@ fun MainContent(
             modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             MainMenuButton(
-                "Connetti al bluetooth",
-                { btResponse = "Risposta bluetooth..."; btHandler.getBtPermission() },
-                btResponse
-            )
-            MainMenuButton(
                 "Discovery", {
                     btResponseDiscovery = "discovery process"
                     if (ContextCompat.checkSelfPermission(
@@ -75,9 +70,13 @@ fun MainContent(
             MainMenuButton(
                 "Crea Server...",
                 {
-                    btResponseServer = "";
-                    //btHandler.getBtPermission()
-                    btHandler.startBluetoothServer()
+                    try{
+                        btHandler.getBtPermission()
+                        btHandler.startBluetoothServer()
+                        btResponseServer = "Server creato"
+                    } catch (e: Exception) {
+                        btResponseServer = "Errore nella creazione del server"
+                    }
                 },
                 btResponseServer
             )

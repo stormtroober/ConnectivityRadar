@@ -26,6 +26,7 @@ class BluetoothHandler(private val activity: MainActivity) {
     private val permissionManager = PermissionManager(activity)
     private val bluetoothManager: BluetoothManager =
         appContext.getSystemService(BluetoothManager::class.java)
+    private val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
     private val serverThread : ServerThread = ServerThread(bluetoothManager.adapter, activity)
 
     companion object {
@@ -186,8 +187,7 @@ class BluetoothHandler(private val activity: MainActivity) {
         serverThread.cancel()
     }
 
-    fun startBluetoothClient(device: BluetoothDevice) {
-        val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+    fun startBluetoothClient(device: BluetoothDevice?) {
         if (bluetoothAdapter != null) {
             if (bluetoothAdapter.isEnabled) {
                 if (device != null) {
