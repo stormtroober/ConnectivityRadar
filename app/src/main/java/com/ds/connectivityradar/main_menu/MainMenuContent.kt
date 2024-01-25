@@ -20,8 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.ds.connectivityradar.bluetooth.BluetoothHandler
 import com.ds.connectivityradar.ui.theme.ConnectivityRadarTheme
 

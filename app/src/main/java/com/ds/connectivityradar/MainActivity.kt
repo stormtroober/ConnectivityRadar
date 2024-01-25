@@ -2,6 +2,8 @@ package com.ds.connectivityradar
 
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Message
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -15,6 +17,7 @@ import com.ds.connectivityradar.main_menu.MainScreen
 class MainActivity : ComponentActivity() {
 
     private lateinit var btHandler: BluetoothHandler
+
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

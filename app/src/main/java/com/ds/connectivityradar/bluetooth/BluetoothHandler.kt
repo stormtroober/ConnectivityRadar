@@ -190,7 +190,7 @@ class BluetoothHandler(private val activity: MainActivity) {
         isBluetoothServerRunning = false
     }
 
-    fun startBluetoothClient(device: BluetoothDevice?) {
+    private fun startBluetoothClient(device: BluetoothDevice?) {
         if (bluetoothAdapter != null) {
             if (bluetoothAdapter.isEnabled) {
                 if (device != null) {
