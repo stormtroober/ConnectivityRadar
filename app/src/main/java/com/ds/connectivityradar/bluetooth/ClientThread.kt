@@ -17,8 +17,9 @@ import java.util.UUID
 @SuppressLint("MissingPermission")
 class ClientThread (private val adapter: BluetoothAdapter, private val device: BluetoothDevice, private val activity: MainActivity) : Thread() {
     private val permissionManager = PermissionManager(activity)
-    private val bluetoothAdapter: BluetoothAdapter? = adapter
+    private val bluetoothAdapter: BluetoothAdapter = adapter
     private var clientSocket: BluetoothSocket? = null
+    private val bluetoothService = activity.getBluetoothService()
 
     init {
         if(permissionManager.isPermissionGranted(Manifest.permission.BLUETOOTH_CONNECT)){
@@ -33,7 +34,7 @@ class ClientThread (private val adapter: BluetoothAdapter, private val device: B
     public override fun run() {
         // Cancel discovery because it otherwise slows down the connection.
 
-        bluetoothAdapter?.cancelDiscovery()
+        bluetoothAdapter.cancelDiscovery()
 
         clientSocket?.let { socket ->
             // Connect to the remote device through the socket. This call blocks
@@ -46,6 +47,11 @@ class ClientThread (private val adapter: BluetoothAdapter, private val device: B
         }
     }
 
+    fun sendMessage(message: String) {
+        val connectThread = bluetoothService.ConnectedThread(clientSocket!!)
+        connectThread.write(message.toByteArray())
+    }
+
     // Closes the client socket and causes the thread to finish.
     fun cancel() {
         try {
@@ -56,6 +62,6 @@ class ClientThread (private val adapter: BluetoothAdapter, private val device: B
     }
 
     private fun manageMyConnectedSocket(socket: BluetoothSocket) {
-        Log.i("ClientThread", "Connected to server")
+        clientSocket = socket
     }
 }

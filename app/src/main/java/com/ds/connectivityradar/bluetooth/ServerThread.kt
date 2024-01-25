@@ -22,6 +22,7 @@ class ServerThread(private val btAdapter: BluetoothAdapter, private val activity
 
     private val permissionManager = PermissionManager(activity)
     private var serverSocket: BluetoothServerSocket? = null
+    private val bluetoothService = activity.getBluetoothService()
 
     private fun initialiseSocket(): BluetoothServerSocket? {
         val mmServerSocket: BluetoothServerSocket? by lazy(LazyThreadSafetyMode.NONE) {
@@ -68,6 +69,8 @@ class ServerThread(private val btAdapter: BluetoothAdapter, private val activity
 
     private fun manageMyConnectedSocket(socket: BluetoothSocket) {
         Log.i("ServerThread", "Message arrived at socket")
+        val connectedThread = bluetoothService.ConnectedThread(socket)
+        connectedThread.start()
     }
 
     // Closes the connect socket and causes the thread to finish.

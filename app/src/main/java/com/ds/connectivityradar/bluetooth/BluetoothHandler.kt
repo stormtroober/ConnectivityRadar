@@ -29,6 +29,8 @@ class BluetoothHandler(private val activity: MainActivity) {
     private val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
     private val serverThread : ServerThread = ServerThread(bluetoothManager.adapter, activity)
     private var isBluetoothServerRunning = false
+    private var receiver: BroadcastReceiver? = null
+    private var clientThread: ClientThread? = null
 
     companion object {
         private const val REQUEST_ENABLE_BT = 1
@@ -135,7 +137,7 @@ class BluetoothHandler(private val activity: MainActivity) {
                 }
 
                 val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
-                val receiver = object : BroadcastReceiver() {
+                receiver = object : BroadcastReceiver() {
                     override fun onReceive(context: Context, intent: Intent) {
                         val device: BluetoothDevice? =
                             intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
@@ -182,7 +184,10 @@ class BluetoothHandler(private val activity: MainActivity) {
         }
         Log.i("com.ds.connectivityradar.BluetoothHandler", "Connecting to device ${device.name} with address ${device.address}")
         startBluetoothClient(device)
-        
+    }
+
+    fun sendMessageToDevice(device: BluetoothDevice){
+        clientThread?.sendMessage("Hello from client")
     }
 
     fun stopBluetoothServer() {
@@ -194,8 +199,8 @@ class BluetoothHandler(private val activity: MainActivity) {
         if (bluetoothAdapter != null) {
             if (bluetoothAdapter.isEnabled) {
                 if (device != null) {
-                    val clientThread = ClientThread(bluetoothAdapter, device, activity)
-                    clientThread.start()
+                    clientThread = ClientThread(bluetoothAdapter, device, activity)
+                    clientThread!!.start()
                 }
             }
         }
@@ -203,5 +208,12 @@ class BluetoothHandler(private val activity: MainActivity) {
 
     fun isServerRunning(): Boolean {
         return isBluetoothServerRunning
+    }
+
+    fun unregisterReceiver() {
+        if (receiver != null) {
+            activity.unregisterReceiver(receiver)
+            receiver = null
+        }
     }
 }
