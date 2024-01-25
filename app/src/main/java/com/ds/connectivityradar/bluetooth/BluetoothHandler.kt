@@ -28,6 +28,7 @@ class BluetoothHandler(private val activity: MainActivity) {
         appContext.getSystemService(BluetoothManager::class.java)
     private val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
     private val serverThread : ServerThread = ServerThread(bluetoothManager.adapter, activity)
+    private var isBluetoothServerRunning = false
 
     companion object {
         private const val REQUEST_ENABLE_BT = 1
@@ -37,6 +38,7 @@ class BluetoothHandler(private val activity: MainActivity) {
         val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
         if (bluetoothAdapter != null) {
             if (bluetoothAdapter.isEnabled) {
+                isBluetoothServerRunning = true
                 serverThread.start()
             }
         }
@@ -185,6 +187,7 @@ class BluetoothHandler(private val activity: MainActivity) {
 
     fun stopBluetoothServer() {
         serverThread.cancel()
+        isBluetoothServerRunning = false
     }
 
     fun startBluetoothClient(device: BluetoothDevice?) {
@@ -196,5 +199,9 @@ class BluetoothHandler(private val activity: MainActivity) {
                 }
             }
         }
+    }
+
+    fun isServerRunning(): Boolean {
+        return isBluetoothServerRunning
     }
 }

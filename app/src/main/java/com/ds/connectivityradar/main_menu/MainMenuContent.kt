@@ -65,11 +65,18 @@ fun MainContent(
                 "Crea Server...",
                 {
                     try{
-                        btHandler.getBtPermission()
-                        btHandler.startBluetoothServer()
-                        btResponseServer = "Server creato"
+                        //Se il server sta già runnando, lo stoppo e ne creo uno nuovo
+                        if(!btHandler.isServerRunning()){
+                            btHandler.getBtPermission()
+                            btHandler.startBluetoothServer()
+                            btResponseServer = "Server online"
+                        }
+                        else{
+                            btResponseServer = "Server Online already"
+                        }
+
                     } catch (e: Exception) {
-                        btResponseServer = "Errore nella creazione del server"
+                        btResponseServer = "Server offline - errors"
                     }
                 },
                 btResponseServer
