@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothServerSocket
 import android.bluetooth.BluetoothSocket
 import android.content.ContentValues.TAG
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import java.util.UUID
@@ -40,6 +41,11 @@ class ServerThread(private val btAdapter: BluetoothAdapter, private val activity
     }
 
     override fun run() {
+        // Make the device discoverable
+        val discoverableIntent: Intent = Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE).apply {
+            putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300)
+        }
+        activity.startActivity(discoverableIntent)
         serverSocket = initialiseSocket()
         Log.i("ServerThread", "Server bluetooth")
         // Keep listening until exception occurs or a socket is returned.
