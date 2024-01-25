@@ -45,7 +45,7 @@ class BluetoothHandler(private val activity: MainActivity) {
     fun getBtPermission() {
         val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
         ActivityCompat.requestPermissions(
-            activity, arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_ADVERTISE), REQUEST_ENABLE_BT
+            activity, arrayOf(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_ADVERTISE), REQUEST_ENABLE_BT
         )
         if (bluetoothAdapter?.isEnabled == false) {
             permissionManager.requestPermission(Manifest.permission.BLUETOOTH_CONNECT)

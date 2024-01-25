@@ -1,6 +1,7 @@
 package com.ds.connectivityradar.main_menu
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.bluetooth.BluetoothDevice
 import android.content.pm.PackageManager
@@ -24,6 +25,7 @@ import androidx.core.content.ContextCompat
 import com.ds.connectivityradar.bluetooth.BluetoothHandler
 import com.ds.connectivityradar.ui.theme.ConnectivityRadarTheme
 
+@SuppressLint("MissingPermission")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun MainContent(
@@ -43,17 +45,9 @@ fun MainContent(
             MainMenuButton(
                 "Discovery", {
                     btResponseDiscovery = "discovery process"
-                    if (ContextCompat.checkSelfPermission(
-                            activity, Manifest.permission.BLUETOOTH_CONNECT
-                        ) == PackageManager.PERMISSION_GRANTED
-                    ) {
-                        btHandler.discovery(discoveredDevices)
-                    } else {
-                        // Request the necessary permissions
-                        ActivityCompat.requestPermissions(
-                            activity, arrayOf(Manifest.permission.BLUETOOTH_CONNECT), 1
-                        )
-                    }
+                    btHandler.getBtPermission()
+                    btHandler.discovery(discoveredDevices)
+
                 }, "discovery process"
             )
             LazyColumn {
