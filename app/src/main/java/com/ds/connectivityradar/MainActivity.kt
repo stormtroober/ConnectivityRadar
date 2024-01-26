@@ -1,18 +1,18 @@
 package com.ds.connectivityradar
 
+import android.bluetooth.BluetoothDevice
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import com.ds.connectivityradar.bluetooth.BluetoothHandler
-import com.ds.connectivityradar.bluetooth.BluetoothService
-import com.ds.connectivityradar.main_menu.MainContent
 import com.ds.connectivityradar.main_menu.MainScreen
 import com.ds.connectivityradar.utils.Constants
 
@@ -20,7 +20,9 @@ import com.ds.connectivityradar.utils.Constants
 class MainActivity : ComponentActivity() {
 
     private lateinit var btHandler: BluetoothHandler
-    private lateinit var bluetoothService: BluetoothService
+    var isSocketRunning = mutableStateOf(false)
+    var deviceConnected = mutableStateOf<BluetoothDevice?>(null)
+
 
     private val handler: Handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
@@ -29,6 +31,7 @@ class MainActivity : ComponentActivity() {
                     // Handle data read from Bluetooth device
                     val readBytes = msg.obj as ByteArray
                     // Process the received data as needed
+                    Log.i("mainActivity received message", String(readBytes))
                 }
                 Constants.MESSAGE_WRITE -> {
                     // Handle data sent to Bluetooth device
@@ -43,13 +46,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    public fun getBluetoothService(): BluetoothService {
-        return bluetoothService
-    }
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        bluetoothService = BluetoothService(handler)
         btHandler = BluetoothHandler(this)
         setContent {
             MainScreen(btHandler)
@@ -61,4 +60,16 @@ class MainActivity : ComponentActivity() {
         btHandler.stopBluetoothServer()
         btHandler.unregisterReceiver()
     }
+
+    public fun getHandler(): Handler {
+        return handler
+    }
+
+    public fun isSocketRunning() : Boolean{
+        return isSocketRunning.value
+    }
+    public fun getDeviceConnected() : BluetoothDevice?{
+        return deviceConnected.value
+    }
+
 }

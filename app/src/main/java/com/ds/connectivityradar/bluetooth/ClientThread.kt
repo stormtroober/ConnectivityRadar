@@ -5,9 +5,8 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
-import android.content.pm.PackageManager
 import android.util.Log
-import androidx.core.app.ActivityCompat
+import android.widget.Toast
 import com.ds.connectivityradar.MainActivity
 import com.ds.connectivityradar.permissions.PermissionManager
 import com.ds.connectivityradar.utils.Constants
@@ -19,7 +18,6 @@ class ClientThread (private val adapter: BluetoothAdapter, private val device: B
     private val permissionManager = PermissionManager(activity)
     private val bluetoothAdapter: BluetoothAdapter = adapter
     private var clientSocket: BluetoothSocket? = null
-    private val bluetoothService = activity.getBluetoothService()
 
     init {
         if(permissionManager.isPermissionGranted(Manifest.permission.BLUETOOTH_CONNECT)){
@@ -48,8 +46,10 @@ class ClientThread (private val adapter: BluetoothAdapter, private val device: B
     }
 
     fun sendMessage(message: String) {
-        val connectThread = bluetoothService.ConnectedThread(clientSocket!!)
-        connectThread.write(message.toByteArray())
+        Log.i("ClientThread", "Sent Message to the socket")
+
+        clientSocket?.let { ConnectedThread(it, activity.getHandler()) }
+            ?.write(message.toByteArray())
     }
 
     // Closes the client socket and causes the thread to finish.
@@ -62,6 +62,14 @@ class ClientThread (private val adapter: BluetoothAdapter, private val device: B
     }
 
     private fun manageMyConnectedSocket(socket: BluetoothSocket) {
-        clientSocket = socket
+        Log.i("ClientThread", "manageSocket")
+        //val connectedThread = ConnectedThread(socket, activity.getHandler())
+        //connectedThread.start()
+        Log.i("ClientThread", "Socket is up and running")
+        activity.runOnUiThread {
+            Toast.makeText(activity, "Socket is up and running", Toast.LENGTH_SHORT).show()
+            (activity as MainActivity).deviceConnected.value = device
+            (activity as MainActivity).isSocketRunning.value = true
+        }
     }
 }

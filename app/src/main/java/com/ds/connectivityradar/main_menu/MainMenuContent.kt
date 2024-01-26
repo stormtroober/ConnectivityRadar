@@ -14,12 +14,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.ds.connectivityradar.MainActivity
 import com.ds.connectivityradar.bluetooth.BluetoothHandler
 import com.ds.connectivityradar.ui.theme.ConnectivityRadarTheme
 
@@ -79,6 +81,19 @@ fun MainContent(
                 },
                 btResponseServer
             )
+            
+            if((activity as MainActivity).isSocketRunning()){
+                val device = (activity as MainActivity).getDeviceConnected()
+                val deviceName = (device?.name ?: "Unknown Device")
+                MainMenuButton(buttonText = "Send Message to " + deviceName,
+                    buttonAction = {
+                        if (device != null) {
+                            btHandler.sendMessageToConnectedSocket()
+                        }
+
+                    },
+                    text = "")
+            }
 
 
 

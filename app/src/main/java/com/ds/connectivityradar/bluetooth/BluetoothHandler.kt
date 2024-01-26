@@ -186,8 +186,8 @@ class BluetoothHandler(private val activity: MainActivity) {
         startBluetoothClient(device)
     }
 
-    fun sendMessageToDevice(device: BluetoothDevice){
-        clientThread?.sendMessage("Hello from client")
+    fun sendMessageToConnectedSocket(){
+        clientThread?.sendMessage("Hello")
     }
 
     fun stopBluetoothServer() {
