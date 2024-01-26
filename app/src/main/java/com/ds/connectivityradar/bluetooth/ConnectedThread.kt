@@ -20,8 +20,11 @@ class ConnectedThread(private val socket: BluetoothSocket, private val handler: 
                 // Read from the InputStream.
                 val bytes = inputStream.read(buffer)
                 // Send the obtained bytes to the UI activity.
+                val readBytes = ByteArray(bytes)
+                System.arraycopy(buffer, 0, readBytes, 0, bytes)
 
-                handler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, buffer)
+                // Send the obtained bytes to the UI activity.
+                handler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, readBytes)
                     .sendToTarget()
             } catch (e: IOException) {
                 Log.e("ConnectedThread", "Input stream was disconnected", e)

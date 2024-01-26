@@ -32,6 +32,8 @@ class MainActivity : ComponentActivity() {
                     val readBytes = msg.obj as ByteArray
                     // Process the received data as needed
                     Log.i("mainActivity received message", String(readBytes))
+                    val receivedMessage = String(readBytes)+" Server"
+                    btHandler.sendMessageToConnectedSocket(receivedMessage)
                 }
                 Constants.MESSAGE_WRITE -> {
                     // Handle data sent to Bluetooth device

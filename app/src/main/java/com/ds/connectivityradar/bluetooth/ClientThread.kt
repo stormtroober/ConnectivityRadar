@@ -18,7 +18,7 @@ class ClientThread (private val adapter: BluetoothAdapter, private val device: B
     private val permissionManager = PermissionManager(activity)
     private val bluetoothAdapter: BluetoothAdapter = adapter
     private var clientSocket: BluetoothSocket? = null
-
+    private var connectedThread: ConnectedThread? = null
     init {
         if(permissionManager.isPermissionGranted(Manifest.permission.BLUETOOTH_CONNECT)){
             clientSocket = device.createRfcommSocketToServiceRecord(UUID.fromString(Constants.UUID))
@@ -48,8 +48,7 @@ class ClientThread (private val adapter: BluetoothAdapter, private val device: B
     fun sendMessage(message: String) {
         Log.i("ClientThread", "Sent Message to the socket")
 
-        clientSocket?.let { ConnectedThread(it, activity.getHandler()) }
-            ?.write(message.toByteArray())
+        connectedThread?.write(message.toByteArray())
     }
 
     // Closes the client socket and causes the thread to finish.
@@ -64,6 +63,8 @@ class ClientThread (private val adapter: BluetoothAdapter, private val device: B
     private fun manageMyConnectedSocket(socket: BluetoothSocket) {
         Log.i("ClientThread", "manageSocket")
         //val connectedThread = ConnectedThread(socket, activity.getHandler())
+        connectedThread = ConnectedThread(socket, activity.getHandler())
+        connectedThread?.start()
         //connectedThread.start()
         Log.i("ClientThread", "Socket is up and running")
         activity.runOnUiThread {

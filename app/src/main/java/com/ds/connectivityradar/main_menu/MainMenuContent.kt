@@ -88,7 +88,7 @@ fun MainContent(
                 MainMenuButton(buttonText = "Send Message to " + deviceName,
                     buttonAction = {
                         if (device != null) {
-                            btHandler.sendMessageToConnectedSocket()
+                            btHandler.sendMessageToConnectedSocket("Hello from client")
                         }
 
                     },
