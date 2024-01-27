@@ -33,16 +33,19 @@ class ClientThread (adapter: BluetoothAdapter, private val device: BluetoothDevi
         // Cancel discovery because it otherwise slows down the connection.
 
         bluetoothAdapter.cancelDiscovery()
+        if(connectedThread == null) {
+            clientSocket?.let { socket ->
+                // Connect to the remote device through the socket. This call blocks
+                // until it succeeds or throws an exception.
+                socket.connect()
 
-        clientSocket?.let { socket ->
-            // Connect to the remote device through the socket. This call blocks
-            // until it succeeds or throws an exception.
-            socket.connect()
+                // The connection attempt succeeded. Perform work associated with
+                // the connection in a separate thread.
+                manageMyConnectedSocket(socket)
+            }
 
-            // The connection attempt succeeded. Perform work associated with
-            // the connection in a separate thread.
-            manageMyConnectedSocket(socket)
         }
+
     }
 
     fun sendMessage(message: String) {

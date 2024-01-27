@@ -45,6 +45,10 @@ class BluetoothHandler(activity: MainActivity) {
         bluetoothClientManager.sendMessageToServer(message)
     }
 
+    fun sendMessageToClient(message: String) {
+        bluetoothServerManager.sendMessageToClient(message)
+    }
+
     fun stopBluetoothServer() {
         bluetoothServerManager.stopBluetoothServer()
     }

@@ -12,18 +12,22 @@ import android.util.Log
 
 import com.ds.connectivityradar.MainActivity
 import com.ds.connectivityradar.permissions.PermissionManager
+import com.ds.connectivityradar.utils.Constants
+import java.io.Console
 import java.io.IOException
 
 class ServerThread(private val btAdapter: BluetoothAdapter, private val activity: MainActivity) : Thread() {
 
     private val permissionManager = PermissionManager(activity)
     private var serverSocket: BluetoothServerSocket? = null
+    private var connectedThread: ConnectedThread? = null
 
     private fun initialiseSocket(): BluetoothServerSocket? {
         val mmServerSocket: BluetoothServerSocket? by lazy(LazyThreadSafetyMode.NONE) {
             try {
                 if(permissionManager.isPermissionGranted(Manifest.permission.BLUETOOTH_CONNECT)) {
-                    btAdapter.listenUsingRfcommWithServiceRecord("ConnectivityRadar", UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"))
+                    btAdapter.listenUsingRfcommWithServiceRecord("ConnectivityRadar", UUID.fromString(
+                        Constants.UUID))
                 } else {
                     null
                 }
@@ -37,34 +41,39 @@ class ServerThread(private val btAdapter: BluetoothAdapter, private val activity
     }
 
     override fun run() {
-        // Make the device discoverable
-        val discoverableIntent: Intent = Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE).apply {
-            putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300)
-        }
-        activity.startActivity(discoverableIntent)
-        serverSocket = initialiseSocket()
-        Log.i("ServerThread", "Server bluetooth")
-        // Keep listening until exception occurs or a socket is returned.
-        var shouldLoop = true
-        while (shouldLoop) {
-            val socket: BluetoothSocket? = try {
-                serverSocket?.accept()
-            } catch (e: IOException) {
-                Log.e("ServerThread", "Socket's accept() method failed", e)
-                shouldLoop = false
-                null
-            }
-            socket?.also {
-                manageMyConnectedSocket(it)
-                //serverSocket?.close()
-                shouldLoop = false
+        if (connectedThread == null) {
+
+
+            // Make the device discoverable
+            val discoverableIntent: Intent =
+                Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE).apply {
+                    putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300)
+                }
+            activity.startActivity(discoverableIntent)
+            serverSocket = initialiseSocket()
+            Log.i("ServerThread", "Server bluetooth")
+            // Keep listening until exception occurs or a socket is returned.
+            var shouldLoop = true
+            while (shouldLoop) {
+                val socket: BluetoothSocket? = try {
+                    serverSocket?.accept()
+                } catch (e: IOException) {
+                    Log.e("ServerThread", "Socket's accept() method failed", e)
+                    shouldLoop = false
+                    null
+                }
+                socket?.also {
+                    manageMyConnectedSocket(it)
+                    //serverSocket?.close()
+                    shouldLoop = false
+                }
             }
         }
     }
 
     private fun manageMyConnectedSocket(socket: BluetoothSocket) {
-        val connectedThread = ConnectedThread(socket, activity.getHandler())
-        connectedThread.start()
+        connectedThread = ConnectedThread(socket, activity.getHandler())
+        connectedThread?.start()
         Log.i("ServerThread", "listening to socket.")
     }
 
@@ -76,4 +85,11 @@ class ServerThread(private val btAdapter: BluetoothAdapter, private val activity
             Log.e(TAG, "Could not close the connect socket", e)
         }
     }
+
+    fun sendMessage(message: String) {
+        Log.i("ServerThread", "Sent Message to the socket")
+        connectedThread?.write(message.toByteArray())
+    }
+
+
 }
