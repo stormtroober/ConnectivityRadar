@@ -12,8 +12,8 @@ import com.ds.connectivityradar.bluetooth.communication_threads.ClientThread
  * This class is responsible for managing the connection to a Bluetooth device.
  * @param activity The activity that uses this class.
  */
-class BluetoothClientManager(private val activity: MainActivity, private val bluetoothManager: BluetoothManager){
-    private var clientThread: ClientThread? = null
+class BluetoothClientManager(private val activity: MainActivity, private val bluetoothManager: BluetoothManager) : BluetoothConnectionManager(activity, bluetoothManager){
+
 
     /**
      * Connects to a Bluetooth device.
@@ -25,18 +25,12 @@ class BluetoothClientManager(private val activity: MainActivity, private val blu
         val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
         if (bluetoothAdapter != null) {
             if (bluetoothAdapter.isEnabled) {
-                clientThread = ClientThread(bluetoothAdapter, clientDevice, activity)
-                clientThread!!.start()
+                btThread = ClientThread(bluetoothAdapter, clientDevice, activity)
+                btThread!!.start()
             }
         }
     }
 
-    /**
-     * Sends a message to the connected socket.
-     * @param message The message to be sent.
-     */
-    fun sendMessageToServer(message: String){
-        clientThread?.sendMessage(message)
-    }
+
 
 }

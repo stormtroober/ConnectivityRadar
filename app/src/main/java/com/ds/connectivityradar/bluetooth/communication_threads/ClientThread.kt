@@ -5,27 +5,23 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.ds.connectivityradar.MainActivity
 import com.ds.connectivityradar.permissions.PermissionManager
 import com.ds.connectivityradar.utils.Constants
 import java.io.IOException
 import java.util.UUID
 
+@RequiresApi(Build.VERSION_CODES.S)
 @SuppressLint("MissingPermission")
-class ClientThread (adapter: BluetoothAdapter, private val device: BluetoothDevice, private val activity: MainActivity) : Thread() {
-    private val permissionManager = PermissionManager(activity)
-    private val bluetoothAdapter: BluetoothAdapter = adapter
-    private var clientSocket: BluetoothSocket? = null
-    private var connectedThread: ConnectedThread? = null
+class ClientThread (adapter: BluetoothAdapter, private val device: BluetoothDevice, private val activity: MainActivity) :
+    BluetoothThread(adapter, activity){
+
     init {
-        if(permissionManager.isPermissionGranted(Manifest.permission.BLUETOOTH_CONNECT)){
-            clientSocket = device.createRfcommSocketToServiceRecord(UUID.fromString(Constants.UUID))
-        } else {
-            null
-            Log.e("ClientThread", "Permission not granted")
-        }
+        socket = device.createRfcommSocketToServiceRecord(UUID.fromString(Constants.UUID))
     }
 
 
@@ -34,7 +30,7 @@ class ClientThread (adapter: BluetoothAdapter, private val device: BluetoothDevi
 
         bluetoothAdapter.cancelDiscovery()
         if(connectedThread == null) {
-            clientSocket?.let { socket ->
+            socket?.let { socket ->
                 // Connect to the remote device through the socket. This call blocks
                 // until it succeeds or throws an exception.
                 socket.connect()
@@ -48,20 +44,6 @@ class ClientThread (adapter: BluetoothAdapter, private val device: BluetoothDevi
 
     }
 
-    fun sendMessage(message: String) {
-        Log.i("ClientThread", "Sent Message to the socket")
-
-        connectedThread?.write(message.toByteArray())
-    }
-
-    // Closes the client socket and causes the thread to finish.
-    fun cancel() {
-        try {
-            clientSocket?.close()
-        } catch (e: IOException) {
-            Log.e("ClientThread", "Could not close the client socket", e)
-        }
-    }
 
     private fun manageMyConnectedSocket(socket: BluetoothSocket) {
         Log.i("ClientThread", "manageSocket")

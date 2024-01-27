@@ -7,23 +7,25 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.ds.connectivityradar.MainActivity
 import com.ds.connectivityradar.bluetooth.bluetooth_management.BluetoothClientManager
+import com.ds.connectivityradar.bluetooth.bluetooth_management.BluetoothConnectionManager
 import com.ds.connectivityradar.bluetooth.bluetooth_management.BluetoothDiscoveryManager
 import com.ds.connectivityradar.bluetooth.bluetooth_management.BluetoothServerManager
 import com.ds.connectivityradar.permissions.PermissionManager
 
 class BluetoothHandler(activity: MainActivity) {
-
+    private val activity: MainActivity = activity
     private val appContext: Context = activity.applicationContext
     private val permissionManager = PermissionManager(activity)
     private val bluetoothManager: BluetoothManager =
         appContext.getSystemService(BluetoothManager::class.java)
 
     private val bluetoothDiscoveryManager = BluetoothDiscoveryManager(activity, permissionManager)
-    private val bluetoothClientManager = BluetoothClientManager(activity, bluetoothManager)
-    private val bluetoothServerManager = BluetoothServerManager(activity, bluetoothManager)
+    private var bluetoothConnectionManager: BluetoothConnectionManager? = null
 
+    @RequiresApi(Build.VERSION_CODES.S)
     fun startBluetoothServer() {
-        bluetoothServerManager.startBluetoothServer()
+        bluetoothConnectionManager = BluetoothServerManager(activity, bluetoothManager)
+        (bluetoothConnectionManager as? BluetoothServerManager)?.startBluetoothServer()
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -38,23 +40,23 @@ class BluetoothHandler(activity: MainActivity) {
 
     @RequiresApi(Build.VERSION_CODES.S)
     fun connectToDevice(device: BluetoothDevice) {
-        bluetoothClientManager.connectToClient(device)
+        bluetoothConnectionManager = BluetoothClientManager(activity, bluetoothManager)
+        (bluetoothConnectionManager as? BluetoothClientManager)?.connectToClient(device)
     }
 
-    fun sendMessageToServer(message: String) {
-        bluetoothClientManager.sendMessageToServer(message)
+    @RequiresApi(Build.VERSION_CODES.S)
+    fun sendMessage(message : String) {
+        bluetoothConnectionManager?.sendMessage(message)
     }
 
-    fun sendMessageToClient(message: String) {
-        bluetoothServerManager.sendMessageToClient(message)
-    }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     fun stopBluetoothServer() {
-        bluetoothServerManager.stopBluetoothServer()
+        (bluetoothConnectionManager as? BluetoothServerManager)?.stopBluetoothServer()
     }
 
     fun isServerRunning(): Boolean {
-        return bluetoothServerManager.isServerRunning()
+        return (bluetoothConnectionManager as? BluetoothServerManager)?.isServerRunning() ?: false
     }
 
     fun unregisterReceiver() {

@@ -24,6 +24,7 @@ class MainActivity : ComponentActivity() {
 
 
     private val handler: Handler = object : Handler(Looper.getMainLooper()) {
+        @RequiresApi(Build.VERSION_CODES.S)
         override fun handleMessage(msg: Message) {
             when (msg.what) {
                 Constants.MESSAGE_READ -> {
@@ -32,7 +33,7 @@ class MainActivity : ComponentActivity() {
                     // Process the received data as needed
                     Log.i("mainActivity received message", String(readBytes))
                     val receivedMessage = String(readBytes)+" Server"
-                    btHandler.sendMessageToClient(receivedMessage)
+                    btHandler.sendMessage(receivedMessage)
                 }
                 Constants.MESSAGE_WRITE -> {
                     // Handle data sent to Bluetooth device
