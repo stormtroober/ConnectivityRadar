@@ -2,6 +2,7 @@ package com.ds.connectivityradar.bluetooth.bluetooth_management
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.ds.connectivityradar.MainActivity
@@ -11,7 +12,7 @@ import com.ds.connectivityradar.bluetooth.communication_threads.ClientThread
  * This class is responsible for managing the connection to a Bluetooth device.
  * @param activity The activity that uses this class.
  */
-class BluetoothConnectionManager(private val activity: MainActivity) {
+class BluetoothClientManager(private val activity: MainActivity, private val bluetoothManager: BluetoothManager){
     private var clientThread: ClientThread? = null
 
     /**
@@ -21,7 +22,7 @@ class BluetoothConnectionManager(private val activity: MainActivity) {
      */
     @RequiresApi(Build.VERSION_CODES.S)
     fun connectToClient(clientDevice: BluetoothDevice) {
-        val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+        val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
         if (bluetoothAdapter != null) {
             if (bluetoothAdapter.isEnabled) {
                 clientThread = ClientThread(bluetoothAdapter, clientDevice, activity)
@@ -34,7 +35,7 @@ class BluetoothConnectionManager(private val activity: MainActivity) {
      * Sends a message to the connected socket.
      * @param message The message to be sent.
      */
-    fun sendMessageToConnectedSocket(message: String){
+    fun sendMessageToServer(message: String){
         clientThread?.sendMessage(message)
     }
 

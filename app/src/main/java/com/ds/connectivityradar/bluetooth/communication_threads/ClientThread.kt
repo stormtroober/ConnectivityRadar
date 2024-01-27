@@ -69,8 +69,8 @@ class ClientThread (adapter: BluetoothAdapter, private val device: BluetoothDevi
         Log.i("ClientThread", "Socket is up and running")
         activity.runOnUiThread {
             Toast.makeText(activity, "Socket is up and running", Toast.LENGTH_SHORT).show()
-            (activity as MainActivity).deviceConnected.value = device
-            (activity as MainActivity).isSocketRunning.value = true
+            activity.deviceConnected.value = device
+            activity.isSocketRunning.value = true
         }
     }
 }

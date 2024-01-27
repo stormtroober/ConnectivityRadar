@@ -6,10 +6,9 @@ import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.ds.connectivityradar.MainActivity
-import com.ds.connectivityradar.bluetooth.bluetooth_management.BluetoothConnectionManager
+import com.ds.connectivityradar.bluetooth.bluetooth_management.BluetoothClientManager
 import com.ds.connectivityradar.bluetooth.bluetooth_management.BluetoothDiscoveryManager
 import com.ds.connectivityradar.bluetooth.bluetooth_management.BluetoothServerManager
-import com.ds.connectivityradar.bluetooth.communication_threads.ServerThread
 import com.ds.connectivityradar.permissions.PermissionManager
 
 class BluetoothHandler(activity: MainActivity) {
@@ -18,11 +17,10 @@ class BluetoothHandler(activity: MainActivity) {
     private val permissionManager = PermissionManager(activity)
     private val bluetoothManager: BluetoothManager =
         appContext.getSystemService(BluetoothManager::class.java)
-    private val serverThread: ServerThread = ServerThread(bluetoothManager.adapter, activity)
 
     private val bluetoothDiscoveryManager = BluetoothDiscoveryManager(activity, permissionManager)
-    private val bluetoothConnectionManager = BluetoothConnectionManager(activity)
-    private val bluetoothServerManager = BluetoothServerManager(serverThread)
+    private val bluetoothClientManager = BluetoothClientManager(activity, bluetoothManager)
+    private val bluetoothServerManager = BluetoothServerManager(activity, bluetoothManager)
 
     fun startBluetoothServer() {
         bluetoothServerManager.startBluetoothServer()
@@ -40,11 +38,11 @@ class BluetoothHandler(activity: MainActivity) {
 
     @RequiresApi(Build.VERSION_CODES.S)
     fun connectToDevice(device: BluetoothDevice) {
-        bluetoothConnectionManager.connectToClient(device)
+        bluetoothClientManager.connectToClient(device)
     }
 
-    fun sendMessageToConnectedSocket(message: String) {
-        bluetoothConnectionManager.sendMessageToConnectedSocket(message)
+    fun sendMessageToServer(message: String) {
+        bluetoothClientManager.sendMessageToServer(message)
     }
 
     fun stopBluetoothServer() {

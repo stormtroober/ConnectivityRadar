@@ -10,7 +10,6 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import com.ds.connectivityradar.bluetooth.BluetoothHandler
 import com.ds.connectivityradar.main_menu.MainScreen
@@ -33,7 +32,7 @@ class MainActivity : ComponentActivity() {
                     // Process the received data as needed
                     Log.i("mainActivity received message", String(readBytes))
                     val receivedMessage = String(readBytes)+" Server"
-                    btHandler.sendMessageToConnectedSocket(receivedMessage)
+                    btHandler.sendMessageToServer(receivedMessage)
                 }
                 Constants.MESSAGE_WRITE -> {
                     // Handle data sent to Bluetooth device
