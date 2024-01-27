@@ -1,4 +1,4 @@
-package com.ds.connectivityradar.bluetooth
+package com.ds.connectivityradar.bluetooth.communication_threads
 
 import android.bluetooth.BluetoothSocket
 import android.os.Handler

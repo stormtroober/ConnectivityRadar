@@ -1,10 +1,8 @@
 package com.ds.connectivityradar.main_menu
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.bluetooth.BluetoothDevice
-import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
@@ -14,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -64,26 +61,25 @@ fun MainContent(
             MainMenuButton(
                 "Crea Server...",
                 {
-                    try{
+                    btResponseServer = try{
                         //Se il server sta già runnando, lo stoppo e ne creo uno nuovo
                         if(!btHandler.isServerRunning()){
                             btHandler.getBtPermission()
                             btHandler.startBluetoothServer()
-                            btResponseServer = "Server online"
-                        }
-                        else{
-                            btResponseServer = "Server Online already"
+                            "Server online"
+                        } else{
+                            "Server Online already"
                         }
 
                     } catch (e: Exception) {
-                        btResponseServer = "Server offline - errors"
+                        "Server offline - errors"
                     }
                 },
                 btResponseServer
             )
             
             if((activity as MainActivity).isSocketRunning()){
-                val device = (activity as MainActivity).getDeviceConnected()
+                val device = activity.getDeviceConnected()
                 val deviceName = (device?.name ?: "Unknown Device")
                 MainMenuButton(buttonText = "Send Message to " + deviceName,
                     buttonAction = {

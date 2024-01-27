@@ -1,17 +1,13 @@
-package com.ds.connectivityradar.bluetooth
+package com.ds.connectivityradar.bluetooth.communication_threads
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothServerSocket
 import android.bluetooth.BluetoothSocket
 import android.content.ContentValues.TAG
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import androidx.core.app.ActivityCompat
 import java.util.UUID
 import android.util.Log
-import androidx.core.content.ContextCompat
 
 
 import com.ds.connectivityradar.MainActivity

@@ -1,4 +1,4 @@
-package com.ds.connectivityradar.bluetooth
+package com.ds.connectivityradar.bluetooth.communication_threads
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -14,7 +14,7 @@ import java.io.IOException
 import java.util.UUID
 
 @SuppressLint("MissingPermission")
-class ClientThread (private val adapter: BluetoothAdapter, private val device: BluetoothDevice, private val activity: MainActivity) : Thread() {
+class ClientThread (adapter: BluetoothAdapter, private val device: BluetoothDevice, private val activity: MainActivity) : Thread() {
     private val permissionManager = PermissionManager(activity)
     private val bluetoothAdapter: BluetoothAdapter = adapter
     private var clientSocket: BluetoothSocket? = null
