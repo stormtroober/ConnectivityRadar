@@ -12,8 +12,7 @@ import com.ds.connectivityradar.bluetooth.bluetooth_management.BluetoothDiscover
 import com.ds.connectivityradar.bluetooth.bluetooth_management.BluetoothServerManager
 import com.ds.connectivityradar.permissions.PermissionManager
 
-class BluetoothHandler(activity: MainActivity) {
-    private val activity: MainActivity = activity
+class BluetoothHandler(private val activity: MainActivity) {
     private val appContext: Context = activity.applicationContext
     private val permissionManager = PermissionManager(activity)
     private val bluetoothManager: BluetoothManager =

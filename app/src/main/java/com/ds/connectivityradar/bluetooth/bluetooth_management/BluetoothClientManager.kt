@@ -12,7 +12,9 @@ import com.ds.connectivityradar.bluetooth.communication_threads.ClientThread
  * This class is responsible for managing the connection to a Bluetooth device.
  * @param activity The activity that uses this class.
  */
-class BluetoothClientManager(private val activity: MainActivity, private val bluetoothManager: BluetoothManager) : BluetoothConnectionManager(activity, bluetoothManager){
+class BluetoothClientManager(private val activity: MainActivity, private val bluetoothManager: BluetoothManager) : BluetoothConnectionManager(
+    bluetoothManager
+){
 
 
     /**

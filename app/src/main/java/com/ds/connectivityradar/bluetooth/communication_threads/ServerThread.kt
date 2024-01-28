@@ -1,22 +1,17 @@
 package com.ds.connectivityradar.bluetooth.communication_threads
 
-import android.Manifest
+
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothServerSocket
 import android.bluetooth.BluetoothSocket
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Build
-import java.util.UUID
 import android.util.Log
 import androidx.annotation.RequiresApi
-
-
 import com.ds.connectivityradar.MainActivity
-import com.ds.connectivityradar.permissions.PermissionManager
 import com.ds.connectivityradar.utils.Constants
-import java.io.Console
 import java.io.IOException
+import java.util.UUID
 
 @RequiresApi(Build.VERSION_CODES.S)
 class ServerThread(private val btAdapter: BluetoothAdapter, private val activity: MainActivity) :
@@ -24,22 +19,21 @@ class ServerThread(private val btAdapter: BluetoothAdapter, private val activity
 
     private var serverSocket: BluetoothServerSocket? = null
     private fun initialiseSocket(): BluetoothServerSocket? {
-        val mmServerSocket: BluetoothServerSocket? by lazy(LazyThreadSafetyMode.NONE) {
+        val mmServerSocket: BluetoothServerSocket? by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
             try {
-                btAdapter.listenUsingRfcommWithServiceRecord("ConnectivityRadar", UUID.fromString(Constants.UUID))
+                btAdapter.listenUsingRfcommWithServiceRecord(
+                    "ConnectivityRadar", UUID.fromString(Constants.UUID)
+                )
             } catch (e: SecurityException) {
                 Log.e("ServerThread", "SecurityException while creating BluetoothServerSocket", e)
                 null
             }
         }
-        val socket = mmServerSocket
-        return socket
+        return mmServerSocket
     }
 
     override fun run() {
         if (connectedThread == null) {
-
-
             // Make the device discoverable
             val discoverableIntent: Intent =
                 Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE).apply {
@@ -73,8 +67,6 @@ class ServerThread(private val btAdapter: BluetoothAdapter, private val activity
         connectedThread?.start()
         Log.i("ServerThread", "listening to socket.")
     }
-
-
 
 
 }

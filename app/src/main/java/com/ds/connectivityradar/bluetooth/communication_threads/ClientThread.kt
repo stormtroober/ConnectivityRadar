@@ -1,6 +1,5 @@
 package com.ds.connectivityradar.bluetooth.communication_threads
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -10,26 +9,26 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.ds.connectivityradar.MainActivity
-import com.ds.connectivityradar.permissions.PermissionManager
 import com.ds.connectivityradar.utils.Constants
-import java.io.IOException
 import java.util.UUID
 
 @RequiresApi(Build.VERSION_CODES.S)
 @SuppressLint("MissingPermission")
-class ClientThread (adapter: BluetoothAdapter, private val device: BluetoothDevice, private val activity: MainActivity) :
-    BluetoothThread(adapter, activity){
+class ClientThread(
+    adapter: BluetoothAdapter,
+    private val device: BluetoothDevice,
+    private val activity: MainActivity,
+) : BluetoothThread(adapter, activity) {
 
     init {
         socket = device.createRfcommSocketToServiceRecord(UUID.fromString(Constants.UUID))
     }
 
-
-    public override fun run() {
+    override fun run() {
         // Cancel discovery because it otherwise slows down the connection.
 
         bluetoothAdapter.cancelDiscovery()
-        if(connectedThread == null) {
+        if (connectedThread == null) {
             socket?.let { socket ->
                 // Connect to the remote device through the socket. This call blocks
                 // until it succeeds or throws an exception.
@@ -43,7 +42,6 @@ class ClientThread (adapter: BluetoothAdapter, private val device: BluetoothDevi
         }
 
     }
-
 
     private fun manageMyConnectedSocket(socket: BluetoothSocket) {
         Log.i("ClientThread", "manageSocket")

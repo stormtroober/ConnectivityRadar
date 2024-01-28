@@ -32,16 +32,18 @@ class MainActivity : ComponentActivity() {
                     val readBytes = msg.obj as ByteArray
                     // Process the received data as needed
                     Log.i("mainActivity received message", String(readBytes))
-                    val receivedMessage = String(readBytes)+" Server"
+                    val receivedMessage = String(readBytes) + " Server"
                     btHandler.sendMessage(receivedMessage)
                 }
+
                 Constants.MESSAGE_WRITE -> {
                     // Handle data sent to Bluetooth device
                     // ...
                 }
+
                 Constants.MESSAGE_TOAST -> {
                     // Handle toast messages (e.g., connection failure)
-                    val toastMessage = msg.data.getString("toast")
+                    msg.data.getString("toast")
                     // Show toast message to the user
                 }
             }
@@ -57,20 +59,22 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onDestroy() {
         super.onDestroy()
         btHandler.stopBluetoothServer()
         btHandler.unregisterReceiver()
     }
 
-    public fun getHandler(): Handler {
+    fun getHandler(): Handler {
         return handler
     }
 
-    public fun isSocketRunning() : Boolean{
+    fun isSocketRunning(): Boolean {
         return isSocketRunning.value
     }
-    public fun getDeviceConnected() : BluetoothDevice?{
+
+    fun getDeviceConnected(): BluetoothDevice? {
         return deviceConnected.value
     }
 

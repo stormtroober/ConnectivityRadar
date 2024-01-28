@@ -6,6 +6,7 @@ import android.util.Log
 import com.ds.connectivityradar.utils.Constants
 import java.io.IOException
 
+
 class ConnectedThread(private val socket: BluetoothSocket, private val handler: Handler) : Thread() {
 
     private val inputStream = socket.inputStream
