@@ -52,6 +52,7 @@ class ServerThread(private val btAdapter: BluetoothAdapter, private val activity
                     shouldLoop = false
                     null
                 }
+                serverSocket?.close()
                 socketTmp?.also {
                     manageMyConnectedSocket(it)
                     socket = socketTmp
@@ -64,6 +65,7 @@ class ServerThread(private val btAdapter: BluetoothAdapter, private val activity
 
     private fun manageMyConnectedSocket(socket: BluetoothSocket) {
         connectedThread = ConnectedThread(socket, activity.getHandler(), true)
+        connectedThread!!.priority = Thread.MAX_PRIORITY
         connectedThread?.start()
         Log.i("ServerThread", "listening to socket.")
     }

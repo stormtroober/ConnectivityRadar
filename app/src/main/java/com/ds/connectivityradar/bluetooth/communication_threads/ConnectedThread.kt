@@ -5,13 +5,16 @@ import android.os.Handler
 import android.util.Log
 import com.ds.connectivityradar.utils.Constants
 import java.io.IOException
+import android.os.Process
+import java.io.BufferedInputStream
+import java.io.BufferedOutputStream
 
 
 class ConnectedThread(private val socket: BluetoothSocket, private val handler: Handler,
-    private val amIServer: Boolean) : Thread() {
+                      private val amIServer: Boolean) : Thread() {
 
-    private val inputStream = socket.inputStream
-    private val outputStream = socket.outputStream
+    private val inputStream = BufferedInputStream(socket.inputStream)
+    private val outputStream = BufferedOutputStream(socket.outputStream)
 
     override fun run() {
         val buffer = ByteArray(1024)  // bytes returned from read()
@@ -28,6 +31,7 @@ class ConnectedThread(private val socket: BluetoothSocket, private val handler: 
                 if(amIServer){
                     handler.obtainMessage(Constants.MESSAGE_RECEIVED_SERVER, bytes, -1, readBytes)
                         .sendToTarget()
+
                 } else {
                     handler.obtainMessage(Constants.MESSAGE_RECEIVED_CLIENT, bytes, -1, readBytes)
                         .sendToTarget()
@@ -43,6 +47,7 @@ class ConnectedThread(private val socket: BluetoothSocket, private val handler: 
     fun write(bytes: ByteArray) {
         try {
             outputStream.write(bytes)
+            outputStream.flush()  // Ensure that the data is actually sent
         } catch (e: IOException) {
             Log.e("ConnectedThread", "Error occurred when sending data", e)
         }

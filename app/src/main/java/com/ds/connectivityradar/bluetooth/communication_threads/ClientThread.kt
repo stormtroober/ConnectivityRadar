@@ -47,6 +47,7 @@ class ClientThread(
         Log.i("ClientThread", "manageSocket")
         //val connectedThread = ConnectedThread(socket, activity.getHandler())
         connectedThread = ConnectedThread(socket, activity.getHandler(), false)
+        connectedThread!!.priority = Thread.MAX_PRIORITY
         connectedThread?.start()
         //connectedThread.start()
         Log.i("ClientThread", "Socket is up and running")

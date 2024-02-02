@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
                     val receivedBytes = msg.obj as ByteArray // assuming msg.obj is your ByteArray
 
                     if(String(receivedBytes) == "ACKNOWLEDGE"){
-                        val difference = System.currentTimeMillis() - timeOfSendingClient!!
+                        val difference = Clock.systemUTC().millis() - timeOfSendingClient!!
                         Log.i("Client", "Round Trip Time: $difference")
                         runOnUiThread(Runnable {
                             Toast.makeText(this@MainActivity,
