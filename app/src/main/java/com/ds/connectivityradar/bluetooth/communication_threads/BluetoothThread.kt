@@ -33,7 +33,7 @@ open class BluetoothThread (btAdapter: BluetoothAdapter, activity: MainActivity)
     }
 
     fun sendMessage(message: String) {
-        Log.i("BluetoothThread", "Sent Message to the socket")
+        //Log.i("BluetoothThread", "Sent Message to the socket")
         connectedThread?.write(message.toByteArray())
     }
 

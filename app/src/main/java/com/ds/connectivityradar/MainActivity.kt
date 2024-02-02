@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.os.SystemClock
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -21,19 +22,26 @@ class MainActivity : ComponentActivity() {
     private lateinit var btHandler: BluetoothHandler
     var isSocketRunning = mutableStateOf(false)
     var deviceConnected = mutableStateOf<BluetoothDevice?>(null)
-
+    var timeReceived: Long? = null
 
     private val handler: Handler = object : Handler(Looper.getMainLooper()) {
         @RequiresApi(Build.VERSION_CODES.S)
         override fun handleMessage(msg: Message) {
             when (msg.what) {
                 Constants.MESSAGE_READ -> {
-                    // Handle data read from Bluetooth device
-                    val readBytes = msg.obj as ByteArray
-                    // Process the received data as needed
-                    Log.i("mainActivity received message", String(readBytes))
-                    val receivedMessage = String(readBytes) + " Server"
-                    btHandler.sendMessage(receivedMessage)
+                    val receivedBytes = msg.obj as ByteArray // assuming msg.obj is your ByteArray
+                    val receivedTimeStr = String(receivedBytes)
+                    val receivedTimeMillis = receivedTimeStr.toLong()
+                    var timeDifference: Long = 0
+
+                    val currentTimeMillis = System.currentTimeMillis()
+                    if(timeReceived == null) {
+                        timeReceived = currentTimeMillis
+                    }
+                    else{
+                        timeDifference = receivedTimeMillis - timeReceived!!
+                    }
+                    Log.i("TimeDifference", timeDifference.toString())
                 }
 
                 Constants.MESSAGE_WRITE -> {

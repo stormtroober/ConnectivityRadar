@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.bluetooth.BluetoothDevice
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ fun MainContent(
     discoveredDevices: MutableList<BluetoothDevice>,
     onDeviceClick: (BluetoothDevice) -> Unit
 ) {
+    var timeOfSending: Long? = null
     var btResponse by remember { mutableStateOf("") }
     var btResponseServer by remember { mutableStateOf("") }
     var btResponseClient by remember { mutableStateOf("") }
@@ -84,7 +86,15 @@ fun MainContent(
                 MainMenuButton(buttonText = "Send Message to " + deviceName,
                     buttonAction = {
                         if (device != null) {
-                            btHandler.sendMessage("Hello from client")
+                            if(timeOfSending == null){
+                                timeOfSending = System.currentTimeMillis()
+                            }
+                            else{
+                                Log.i("TimeDifference", (System.currentTimeMillis() - timeOfSending!!).toString())
+                            }
+                            val time = System.currentTimeMillis()
+                            //Log.i("TimeServer", time.toString())
+                            btHandler.sendMessage(time.toString())
                         }
 
                     },
