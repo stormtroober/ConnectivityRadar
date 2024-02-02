@@ -10,6 +10,7 @@ import com.ds.connectivityradar.bluetooth.bluetooth_management.BluetoothClientMa
 import com.ds.connectivityradar.bluetooth.bluetooth_management.BluetoothConnectionManager
 import com.ds.connectivityradar.bluetooth.bluetooth_management.BluetoothDiscoveryManager
 import com.ds.connectivityradar.bluetooth.bluetooth_management.BluetoothServerManager
+import com.ds.connectivityradar.bluetooth.bluetooth_management.KeepAliveThread
 import com.ds.connectivityradar.permissions.PermissionManager
 
 class BluetoothHandler(private val activity: MainActivity) {
@@ -20,6 +21,7 @@ class BluetoothHandler(private val activity: MainActivity) {
 
     private val bluetoothDiscoveryManager = BluetoothDiscoveryManager(activity, permissionManager)
     private var bluetoothConnectionManager: BluetoothConnectionManager? = null
+    private var keepAliveThread: KeepAliveThread = KeepAliveThread(this)
 
     @RequiresApi(Build.VERSION_CODES.S)
     fun startBluetoothServer() {
@@ -27,6 +29,13 @@ class BluetoothHandler(private val activity: MainActivity) {
         (bluetoothConnectionManager as? BluetoothServerManager)?.startBluetoothServer()
     }
 
+    fun startKeepAliveThread() {
+        keepAliveThread.startThread()
+    }
+
+    fun stopKeepAliveThread() {
+        keepAliveThread.stopThread()
+    }
     @RequiresApi(Build.VERSION_CODES.S)
     fun getBtPermission() {
         permissionManager.getBtPermission()
@@ -60,5 +69,9 @@ class BluetoothHandler(private val activity: MainActivity) {
 
     fun unregisterReceiver() {
         bluetoothDiscoveryManager.unregisterReceiver()
+    }
+
+    fun isKeepAliveThreadRunning(): Boolean {
+        return keepAliveThread.isRunning()
     }
 }
