@@ -8,6 +8,7 @@ import android.os.Looper
 import android.os.Message
 import android.os.SystemClock
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -23,7 +24,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var btHandler: BluetoothHandler
     var isSocketRunning = mutableStateOf(false)
     var deviceConnected = mutableStateOf<BluetoothDevice?>(null)
-    var timeReceived: Long? = null
+    public var timeOfSendingClient : Long? = null
 
     private val handler: Handler = object : Handler(Looper.getMainLooper()) {
         @RequiresApi(Build.VERSION_CODES.S)
@@ -31,10 +32,14 @@ class MainActivity : ComponentActivity() {
             when (msg.what) {
                 Constants.MESSAGE_RECEIVED_CLIENT -> {
                     val receivedBytes = msg.obj as ByteArray // assuming msg.obj is your ByteArray
-                    Log.i("Client", "Received message: ${String(receivedBytes)}")
+
                     if(String(receivedBytes) == "ACKNOWLEDGE"){
-                        timeReceived = System.currentTimeMillis()
-                        Log.i("Client", "Time received: $timeReceived")
+                        val difference = System.currentTimeMillis() - timeOfSendingClient!!
+                        Log.i("Client", "Round Trip Time: $difference")
+                        runOnUiThread(Runnable {
+                            Toast.makeText(this@MainActivity,
+                                "Time difference: $difference ms", Toast.LENGTH_SHORT).show()
+                        })
                     }
                 }
 

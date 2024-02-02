@@ -89,6 +89,7 @@ fun MainContent(
                         if (device != null) {
                             val time = Clock.systemUTC().millis()
                             btHandler.sendMessage(time.toString())
+                            activity.timeOfSendingClient = time
                             Log.i("Client", "Message sent to ${device.name}")
                         }
 
