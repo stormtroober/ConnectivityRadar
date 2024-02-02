@@ -46,10 +46,9 @@ class ClientThread(
     private fun manageMyConnectedSocket(socket: BluetoothSocket) {
         Log.i("ClientThread", "manageSocket")
         //val connectedThread = ConnectedThread(socket, activity.getHandler())
-        connectedThread = ConnectedThread(socket, activity.getHandler(), false)
+        connectedThread = activity.getHandler()?.let { ConnectedThread(socket, it, false) }
         connectedThread!!.priority = Thread.MAX_PRIORITY
         connectedThread?.start()
-        //connectedThread.start()
         Log.i("ClientThread", "Socket is up and running")
         activity.runOnUiThread {
             Toast.makeText(activity, "Socket is up and running", Toast.LENGTH_SHORT).show()

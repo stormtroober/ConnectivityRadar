@@ -97,24 +97,6 @@ fun MainContent(
                     text = "")
             }
 
-            MainMenuButton(
-                "Keep Alive",
-                {
-                    //Se verrà eseguito dal client, il server non sarà mai running. Quindi non verrà mai eseguito
-                    btResponse = if(!btHandler.isServerRunning()){
-                        "Server offline"
-                    } else {
-                        if(btHandler.isKeepAliveThreadRunning()){
-                            btHandler.stopKeepAliveThread()
-                            "Keep Alive Thread stopped"
-                        } else {
-                            btHandler.startKeepAliveThread()
-                            "Keep Alive Thread started"
-                        }
-                    }
-                },
-                text = btResponse)
-
 
         }
     }

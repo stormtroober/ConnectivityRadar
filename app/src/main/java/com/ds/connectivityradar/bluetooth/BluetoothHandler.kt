@@ -50,6 +50,7 @@ class BluetoothHandler(private val activity: MainActivity) {
     fun connectToDevice(device: BluetoothDevice) {
         bluetoothConnectionManager = BluetoothClientManager(activity, bluetoothManager)
         (bluetoothConnectionManager as? BluetoothClientManager)?.connectToClient(device)
+        keepAliveThread.startThread()
     }
 
     @RequiresApi(Build.VERSION_CODES.S)

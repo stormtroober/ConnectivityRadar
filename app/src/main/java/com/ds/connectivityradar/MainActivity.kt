@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
 import com.ds.connectivityradar.bluetooth.BluetoothHandler
 import com.ds.connectivityradar.main_menu.MainScreen
+import com.ds.connectivityradar.messages.MessageHandler
 import com.ds.connectivityradar.utils.Constants
 import java.time.Clock
 
@@ -26,35 +27,13 @@ class MainActivity : ComponentActivity() {
     var deviceConnected = mutableStateOf<BluetoothDevice?>(null)
     public var timeOfSendingClient : Long? = null
 
-    private val handler: Handler = object : Handler(Looper.getMainLooper()) {
-        @RequiresApi(Build.VERSION_CODES.S)
-        override fun handleMessage(msg: Message) {
-            when (msg.what) {
-                Constants.MESSAGE_RECEIVED_CLIENT -> {
-                    val receivedBytes = msg.obj as ByteArray // assuming msg.obj is your ByteArray
-
-                    if(String(receivedBytes) == "ACKNOWLEDGE"){
-                        val difference = Clock.systemUTC().millis() - timeOfSendingClient!!
-                        Log.i("Client", "Round Trip Time: $difference")
-                        runOnUiThread(Runnable {
-                            Toast.makeText(this@MainActivity,
-                                "Time difference: $difference ms", Toast.LENGTH_SHORT).show()
-                        })
-                    }
-                }
-
-                Constants.MESSAGE_RECEIVED_SERVER-> {
-                    Log.i("Server", "Received message: ${msg.obj}")
-                    btHandler.sendMessage("ACKNOWLEDGE")
-                }
-            }
-        }
-    }
+    private var handler: Handler? = null
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         btHandler = BluetoothHandler(this)
+        handler = MessageHandler(this, btHandler)
         setContent {
             MainScreen(btHandler)
         }
@@ -67,7 +46,7 @@ class MainActivity : ComponentActivity() {
         btHandler.unregisterReceiver()
     }
 
-    fun getHandler(): Handler {
+    fun getHandler(): Handler? {
         return handler
     }
 
