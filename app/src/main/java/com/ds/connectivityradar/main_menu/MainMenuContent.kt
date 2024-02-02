@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import com.ds.connectivityradar.MainActivity
 import com.ds.connectivityradar.bluetooth.BluetoothHandler
 import com.ds.connectivityradar.ui.theme.ConnectivityRadarTheme
+import java.time.Clock
 
 @SuppressLint("MissingPermission")
 @RequiresApi(Build.VERSION_CODES.S)
@@ -86,15 +87,9 @@ fun MainContent(
                 MainMenuButton(buttonText = "Send Message to " + deviceName,
                     buttonAction = {
                         if (device != null) {
-                            if(timeOfSending == null){
-                                timeOfSending = System.currentTimeMillis()
-                            }
-                            else{
-                                Log.i("TimeDifference", (System.currentTimeMillis() - timeOfSending!!).toString())
-                            }
-                            val time = System.currentTimeMillis()
-                            //Log.i("TimeServer", time.toString())
+                            val time = Clock.systemUTC().millis()
                             btHandler.sendMessage(time.toString())
+                            Log.i("Client", "Message sent to ${device.name}")
                         }
 
                     },

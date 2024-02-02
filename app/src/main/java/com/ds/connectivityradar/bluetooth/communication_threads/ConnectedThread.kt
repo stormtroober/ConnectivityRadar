@@ -7,7 +7,8 @@ import com.ds.connectivityradar.utils.Constants
 import java.io.IOException
 
 
-class ConnectedThread(private val socket: BluetoothSocket, private val handler: Handler) : Thread() {
+class ConnectedThread(private val socket: BluetoothSocket, private val handler: Handler,
+    private val amIServer: Boolean) : Thread() {
 
     private val inputStream = socket.inputStream
     private val outputStream = socket.outputStream
@@ -24,9 +25,13 @@ class ConnectedThread(private val socket: BluetoothSocket, private val handler: 
                 val readBytes = ByteArray(bytes)
                 System.arraycopy(buffer, 0, readBytes, 0, bytes)
 
-                // Send the obtained bytes to the UI activity.
-                handler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, readBytes)
-                    .sendToTarget()
+                if(amIServer){
+                    handler.obtainMessage(Constants.MESSAGE_RECEIVED_SERVER, bytes, -1, readBytes)
+                        .sendToTarget()
+                } else {
+                    handler.obtainMessage(Constants.MESSAGE_RECEIVED_CLIENT, bytes, -1, readBytes)
+                        .sendToTarget()
+                }
             } catch (e: IOException) {
                 Log.e("ConnectedThread", "Input stream was disconnected", e)
                 break

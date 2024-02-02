@@ -63,7 +63,7 @@ class ServerThread(private val btAdapter: BluetoothAdapter, private val activity
     }
 
     private fun manageMyConnectedSocket(socket: BluetoothSocket) {
-        connectedThread = ConnectedThread(socket, activity.getHandler())
+        connectedThread = ConnectedThread(socket, activity.getHandler(), true)
         connectedThread?.start()
         Log.i("ServerThread", "listening to socket.")
     }

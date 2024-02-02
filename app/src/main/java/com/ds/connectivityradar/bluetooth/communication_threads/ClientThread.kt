@@ -46,7 +46,7 @@ class ClientThread(
     private fun manageMyConnectedSocket(socket: BluetoothSocket) {
         Log.i("ClientThread", "manageSocket")
         //val connectedThread = ConnectedThread(socket, activity.getHandler())
-        connectedThread = ConnectedThread(socket, activity.getHandler())
+        connectedThread = ConnectedThread(socket, activity.getHandler(), false)
         connectedThread?.start()
         //connectedThread.start()
         Log.i("ClientThread", "Socket is up and running")

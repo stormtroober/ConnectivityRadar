@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import com.ds.connectivityradar.bluetooth.BluetoothHandler
 import com.ds.connectivityradar.main_menu.MainScreen
 import com.ds.connectivityradar.utils.Constants
+import java.time.Clock
 
 
 class MainActivity : ComponentActivity() {
@@ -28,31 +29,18 @@ class MainActivity : ComponentActivity() {
         @RequiresApi(Build.VERSION_CODES.S)
         override fun handleMessage(msg: Message) {
             when (msg.what) {
-                Constants.MESSAGE_READ -> {
+                Constants.MESSAGE_RECEIVED_CLIENT -> {
                     val receivedBytes = msg.obj as ByteArray // assuming msg.obj is your ByteArray
-                    val receivedTimeStr = String(receivedBytes)
-                    val receivedTimeMillis = receivedTimeStr.toLong()
-                    var timeDifference: Long = 0
-
-                    val currentTimeMillis = System.currentTimeMillis()
-                    if(timeReceived == null) {
-                        timeReceived = currentTimeMillis
+                    Log.i("Client", "Received message: ${String(receivedBytes)}")
+                    if(String(receivedBytes) == "ACKNOWLEDGE"){
+                        timeReceived = System.currentTimeMillis()
+                        Log.i("Client", "Time received: $timeReceived")
                     }
-                    else{
-                        timeDifference = receivedTimeMillis - timeReceived!!
-                    }
-                    Log.i("TimeDifference", timeDifference.toString())
                 }
 
-                Constants.MESSAGE_WRITE -> {
-                    // Handle data sent to Bluetooth device
-                    // ...
-                }
-
-                Constants.MESSAGE_TOAST -> {
-                    // Handle toast messages (e.g., connection failure)
-                    msg.data.getString("toast")
-                    // Show toast message to the user
+                Constants.MESSAGE_RECEIVED_SERVER-> {
+                    Log.i("Server", "Received message: ${msg.obj}")
+                    btHandler.sendMessage("ACKNOWLEDGE")
                 }
             }
         }
