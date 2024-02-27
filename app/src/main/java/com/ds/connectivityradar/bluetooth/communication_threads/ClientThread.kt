@@ -28,7 +28,7 @@ class ClientThread(
         // Cancel discovery because it otherwise slows down the connection.
 
         bluetoothAdapter.cancelDiscovery()
-        if (connectedThread == null) {
+        if (channelThread == null) {
             socket?.let { socket ->
                 // Connect to the remote device through the socket. This call blocks
                 // until it succeeds or throws an exception.
@@ -46,9 +46,9 @@ class ClientThread(
     private fun manageMyConnectedSocket(socket: BluetoothSocket) {
         Log.i("ClientThread", "manageSocket")
         //val connectedThread = ConnectedThread(socket, activity.getHandler())
-        connectedThread = activity.getHandler()?.let { ConnectedThread(socket, it, false) }
-        connectedThread!!.priority = Thread.MAX_PRIORITY
-        connectedThread?.start()
+        channelThread = activity.getHandler()?.let { ChannelThread(socket, it, false) }
+        channelThread!!.priority = Thread.MAX_PRIORITY
+        channelThread?.start()
         Log.i("ClientThread", "Socket is up and running")
         activity.runOnUiThread {
             Toast.makeText(activity, "Socket is up and running", Toast.LENGTH_SHORT).show()

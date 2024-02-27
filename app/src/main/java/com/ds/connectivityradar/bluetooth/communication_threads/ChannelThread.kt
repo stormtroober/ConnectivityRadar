@@ -5,13 +5,12 @@ import android.os.Handler
 import android.util.Log
 import com.ds.connectivityradar.utils.Constants
 import java.io.IOException
-import android.os.Process
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 
 
-class ConnectedThread(private val socket: BluetoothSocket, private val handler: Handler,
-                      private val amIServer: Boolean) : Thread() {
+class ChannelThread(private val socket: BluetoothSocket, private val handler: Handler,
+                    private val amIServer: Boolean) : Thread() {
 
     private val inputStream = BufferedInputStream(socket.inputStream)
     private val outputStream = BufferedOutputStream(socket.outputStream)

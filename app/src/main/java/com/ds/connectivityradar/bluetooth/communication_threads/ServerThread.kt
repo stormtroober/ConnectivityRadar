@@ -33,7 +33,7 @@ class ServerThread(private val btAdapter: BluetoothAdapter, private val activity
     }
 
     override fun run() {
-        if (connectedThread == null) {
+        if (channelThread == null) {
             // Make the device discoverable
             val discoverableIntent: Intent =
                 Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE).apply {
@@ -64,9 +64,9 @@ class ServerThread(private val btAdapter: BluetoothAdapter, private val activity
     }
 
     private fun manageMyConnectedSocket(socket: BluetoothSocket) {
-        connectedThread = activity.getHandler()?.let { ConnectedThread(socket, it, true) }
-        connectedThread!!.priority = MAX_PRIORITY
-        connectedThread?.start()
+        channelThread = activity.getHandler()?.let { ChannelThread(socket, it, true) }
+        channelThread!!.priority = MAX_PRIORITY
+        channelThread?.start()
         Log.i("ServerThread", "listening to socket.")
     }
 

@@ -15,7 +15,7 @@ open class BluetoothThread (btAdapter: BluetoothAdapter, activity: MainActivity)
     private val permissionManager = PermissionManager(activity)
     val bluetoothAdapter: BluetoothAdapter = btAdapter
     open var socket: BluetoothSocket? = null
-    open var connectedThread: ConnectedThread? = null
+    open var channelThread: ChannelThread? = null
 
     init {
         if(permissionManager.isPermissionGranted(Manifest.permission.BLUETOOTH_CONNECT)){
@@ -34,7 +34,7 @@ open class BluetoothThread (btAdapter: BluetoothAdapter, activity: MainActivity)
 
     fun sendMessage(message: String) {
         //Log.i("BluetoothThread", "Sent Message to the socket")
-        connectedThread?.write(message.toByteArray())
+        channelThread?.write(message.toByteArray())
     }
 
 }
