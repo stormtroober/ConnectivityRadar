@@ -35,7 +35,9 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onDestroy() {
         super.onDestroy()
-        btHandler.stopBluetoothServer()
+        //TODO
+        //btHandler.stopBluetoothServer()
+
         btHandler.unregisterReceiver()
     }
 

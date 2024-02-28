@@ -16,7 +16,6 @@ import java.util.UUID
 @RequiresApi(Build.VERSION_CODES.S)
 class ServerThread(private val btAdapter: BluetoothAdapter, private val activity: MainActivity) :
     BluetoothThread(btAdapter, activity) {
-
     private var serverSocket: BluetoothServerSocket? = null
     private fun initialiseSocket(): BluetoothServerSocket? {
         val mmServerSocket: BluetoothServerSocket? by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
@@ -52,21 +51,22 @@ class ServerThread(private val btAdapter: BluetoothAdapter, private val activity
                     shouldLoop = false
                     null
                 }
-                serverSocket?.close()
+                //serverSocket?.close()
                 socketTmp?.also {
-                    manageMyConnectedSocket(it)
-                    socket = socketTmp
+
+                    manageMyConnectedSocket(it, socketTmp)
                     //serverSocket?.close()
-                    shouldLoop = false
+                    shouldLoop = true
                 }
             }
         }
     }
 
-    private fun manageMyConnectedSocket(socket: BluetoothSocket) {
-        channelThread = activity.getHandler()?.let { ChannelThread(socket, it, true) }
+    private fun manageMyConnectedSocket(socket: BluetoothSocket, socketTmp: BluetoothSocket) {
+        channelThread = activity.getHandler()?.let { ChannelThread(socketTmp, it, true) }
         channelThread!!.priority = MAX_PRIORITY
         channelThread?.start()
+        socketsConnected.add(Pair(socketTmp, channelThread!!))
         Log.i("ServerThread", "listening to socket.")
     }
 

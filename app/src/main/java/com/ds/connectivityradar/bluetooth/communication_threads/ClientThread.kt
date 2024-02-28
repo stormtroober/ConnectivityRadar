@@ -20,16 +20,14 @@ class ClientThread(
     private val activity: MainActivity,
 ) : BluetoothThread(adapter, activity) {
 
-    init {
-        socket = device.createRfcommSocketToServiceRecord(UUID.fromString(Constants.UUID))
-    }
+    private val clientSocket: BluetoothSocket? = device.createRfcommSocketToServiceRecord(UUID.fromString(Constants.UUID))
 
     override fun run() {
         // Cancel discovery because it otherwise slows down the connection.
 
         bluetoothAdapter.cancelDiscovery()
         if (channelThread == null) {
-            socket?.let { socket ->
+            clientSocket?.let { socket ->
                 // Connect to the remote device through the socket. This call blocks
                 // until it succeeds or throws an exception.
                 socket.connect()
@@ -50,6 +48,7 @@ class ClientThread(
         channelThread!!.priority = Thread.MAX_PRIORITY
         channelThread?.start()
         Log.i("ClientThread", "Socket is up and running")
+        socketsConnected.add(Pair(socket, channelThread!!))
         activity.runOnUiThread {
             Toast.makeText(activity, "Socket is up and running", Toast.LENGTH_SHORT).show()
             activity.deviceConnected.value = device

@@ -13,7 +13,7 @@ class KeepAliveThread(private val btHandler: BluetoothHandler): Thread() {
         sleep(2000)
         Log.i("KeepAliveThread", "KeepAliveThread started")
         while (isRunning) {
-            btHandler.sendMessage("KeepAlive")
+            //btHandler.sendMessage("KeepAlive")
             sleep(2000)
         }
     }

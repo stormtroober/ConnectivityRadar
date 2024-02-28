@@ -29,12 +29,12 @@ class BluetoothServerManager(private val activity: MainActivity, private val blu
             }
         }
     }
-
-    @RequiresApi(Build.VERSION_CODES.S)
-    fun stopBluetoothServer() {
-        btThread?.cancel()
-        isBluetoothServerRunning = false
-    }
+    //TODO
+//    @RequiresApi(Build.VERSION_CODES.S)
+//    fun stopBluetoothServer() {
+//        btThread?.cancel()
+//        isBluetoothServerRunning = false
+//    }
 
     fun isServerRunning(): Boolean {
         return isBluetoothServerRunning

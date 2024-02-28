@@ -58,11 +58,11 @@ class BluetoothHandler(private val activity: MainActivity) {
         bluetoothConnectionManager?.sendMessage(message)
     }
 
-
-    @RequiresApi(Build.VERSION_CODES.S)
-    fun stopBluetoothServer() {
-        (bluetoothConnectionManager as? BluetoothServerManager)?.stopBluetoothServer()
-    }
+//TODO
+//    @RequiresApi(Build.VERSION_CODES.S)
+//    fun stopBluetoothServer() {
+//        (bluetoothConnectionManager as? BluetoothServerManager)?.stopBluetoothServer()
+//    }
 
     fun isServerRunning(): Boolean {
         return (bluetoothConnectionManager as? BluetoothServerManager)?.isServerRunning() ?: false
