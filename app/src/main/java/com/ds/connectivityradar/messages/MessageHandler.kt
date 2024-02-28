@@ -38,6 +38,7 @@ class MessageHandler(private val activity: MainActivity, private val btHandler: 
 
             Constants.MESSAGE_RECEIVED_SERVER-> {
                 val receivedBytes = msg.obj as ByteArray
+                Log.i("Server", "Received message: ${msg.obj}")
                 val receivedString = String(receivedBytes)
                 if (ignoreKeepAlive(receivedString)) {
                     return

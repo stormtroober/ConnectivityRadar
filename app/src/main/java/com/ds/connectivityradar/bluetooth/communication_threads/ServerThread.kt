@@ -67,7 +67,8 @@ class ServerThread(private val btAdapter: BluetoothAdapter, private val activity
         channelThread!!.priority = MAX_PRIORITY
         channelThread?.start()
         socketsConnected.add(Pair(socketTmp, channelThread!!))
-        Log.i("ServerThread", "listening to socket.")
+        Log.i("ServerThread", "listening to socket to MAC address ${socket.remoteDevice.address}")
+
     }
 
 
