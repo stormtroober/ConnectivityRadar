@@ -9,6 +9,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.ds.connectivityradar.MainActivity
+import com.ds.connectivityradar.bluetooth.bluetooth_management.BluetoothClientManager
 import com.ds.connectivityradar.utils.Constants
 import java.util.UUID
 
@@ -43,7 +44,6 @@ class ClientThread(
 
     private fun manageMyConnectedSocket(socket: BluetoothSocket) {
         Log.i("ClientThread", "manageSocket")
-        //val connectedThread = ConnectedThread(socket, activity.getHandler())
         channelThread = activity.getHandler()?.let { ChannelThread(socket, it, false) }
         channelThread!!.priority = Thread.MAX_PRIORITY
         channelThread?.start()

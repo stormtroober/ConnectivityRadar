@@ -2,6 +2,7 @@ package com.ds.connectivityradar.bluetooth.communication_threads
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.os.Build
 import android.util.Log
@@ -33,9 +34,13 @@ open class BluetoothThread (btAdapter: BluetoothAdapter, activity: MainActivity)
 //    }
 
     fun sendMessage(message: String) {
-        //Log.i("BluetoothThread", "Sent Message to the socket")
-
         channelThread?.write(message.toByteArray())
+    }
+
+    fun sendBroadcastMessage(message: String) {
+        socketsConnected.forEach() { socket ->
+            socket.second.write(message.toByteArray())
+        }
     }
 
 }

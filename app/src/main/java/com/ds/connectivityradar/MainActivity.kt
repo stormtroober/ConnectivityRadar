@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var btHandler: BluetoothHandler
     var isSocketRunning = mutableStateOf(false)
     var deviceConnected = mutableStateOf<BluetoothDevice?>(null)
-    var timeOfSendingClient : Long? = null
+    var timeOfSendingClient : Long? = 0
 
     private var msgHandler: Handler? = null
 

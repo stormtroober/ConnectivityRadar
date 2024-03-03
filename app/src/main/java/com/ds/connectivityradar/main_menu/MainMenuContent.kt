@@ -84,13 +84,13 @@ fun MainContent(
             if((activity as MainActivity).isSocketRunning()){
                 val device = activity.getDeviceConnected()
                 val deviceName = (device?.name ?: "Unknown Device")
-                MainMenuButton(buttonText = "Send Message to " + deviceName,
+                MainMenuButton(buttonText = "Broadcast message",
                     buttonAction = {
                         if (device != null) {
                             val time = Clock.systemUTC().millis()
-                            btHandler.sendMessage(time.toString())
+                            btHandler.broadcastMessage(time.toString())
                             activity.timeOfSendingClient = time
-                            Log.i("Client", "Message sent to ${device.name}")
+                            Log.i("Client", "Message sent")
                         }
 
                     },

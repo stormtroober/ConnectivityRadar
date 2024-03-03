@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.ds.connectivityradar.MainActivity
 import com.ds.connectivityradar.bluetooth.bluetooth_management.BluetoothClientManager
@@ -56,6 +57,12 @@ class BluetoothHandler(private val activity: MainActivity) {
     @RequiresApi(Build.VERSION_CODES.S)
     fun sendMessage(message : String) {
         bluetoothConnectionManager?.sendMessage(message)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    fun broadcastMessage(message: String) {
+        Log.i("bluetoothHandler", "broadcastMessage")
+        bluetoothConnectionManager?.broadcastMessage(message)
     }
 
 //TODO

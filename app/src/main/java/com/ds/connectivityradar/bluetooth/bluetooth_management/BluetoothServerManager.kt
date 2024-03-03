@@ -1,6 +1,7 @@
 package com.ds.connectivityradar.bluetooth.bluetooth_management
 
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -16,7 +17,6 @@ class BluetoothServerManager(private val activity: MainActivity, private val blu
     bluetoothManager
 ){
     private var isBluetoothServerRunning = false
-
 
     @RequiresApi(Build.VERSION_CODES.S)
     fun startBluetoothServer() {

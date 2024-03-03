@@ -43,7 +43,7 @@ class MessageHandler(private val activity: MainActivity, private val btHandler: 
                 if (ignoreKeepAlive(receivedString)) {
                     return
                 }
-                btHandler.sendMessage("ACKNOWLEDGE")
+                btHandler.broadcastMessage("ACKNOWLEDGE")
             }
         }
     }
